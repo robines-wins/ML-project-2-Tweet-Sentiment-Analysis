@@ -8,8 +8,11 @@ import scipy.misc
 from PIL import Image
 from feature_extraction import *
 
+#========================================== To evaluate our model ==========================
+
+
 #========================================== To Submit ======================================
-def create_mask_pred_all_test(submission_path,test_dir_path,classifier,patch_size):
+def create_mask_pred_all_test(submission_path,test_dir_path,classifier,patch_size,in2d=True):
     """This method will use classifier to predict the mask of each image, 
     save the mask in the respective test folders
     and finally output the submission file in submission path
@@ -19,7 +22,7 @@ def create_mask_pred_all_test(submission_path,test_dir_path,classifier,patch_siz
         suffix = 'test_{}/test_{}.png'.format(i,i)
         img_path = test_dir_path + suffix
         # We compute the mask
-        predicted_im = create_mask_for_test_image(img_path,classifier,patch_size)
+        predicted_im = create_mask_for_test_image(img_path,classifier,patch_size,in2d)
         suffix_pred = 'test_{}/test_{}_mask.png'.format(i,i)
         pred_path = test_dir_path + suffix_pred
         masks_file_names.append(pred_path)
@@ -28,7 +31,7 @@ def create_mask_pred_all_test(submission_path,test_dir_path,classifier,patch_siz
     masks_to_submission(submission_path,masks_file_names)
 
 
-def create_mask_for_test_image(img_path,classifier,patch_size):
+def create_mask_for_test_image(img_path,classifier,patch_size,in2d=True):
     """output a mask for the image located at image_path, using classifier.predict"""
     img = load_image(img_path)
     img_patches = img_crop(img, patch_size, patch_size)
@@ -36,7 +39,10 @@ def create_mask_for_test_image(img_path,classifier,patch_size):
     w = img.shape[0]
     h = img.shape[1]
     
-    Xi = np.asarray([ extract_features_2d(img_patches[i]) for i in range(len(img_patches))])
+    if(in2d):
+        Xi = np.asarray([ extract_features_2d(img_patches[i]) for i in range(len(img_patches))])
+    else:
+        Xi = np.asarray([ extract_features(img_patches[i]) for i in range(len(img_patches))])
     Zi = classifier.predict(Xi)
     predicted_im = label_to_img(w, h, patch_size, patch_size, Zi)
     return predicted_im
@@ -76,7 +82,7 @@ def masks_to_submission(submission_filename, image_filenames):
     
 
 #========================================== To Load ======================================
-def get_Xtrain_Ytrain(root_dir,max_number_img,patch_size):
+def get_Xtrain_Ytrain(root_dir,max_number_img,patch_size,in2d=True):
     # Will get the Xtrain and Ytrain from the data using the extract_features_2d
 
     imgs,gt_imgs = load_train(root_dir,max_number_img)
@@ -90,7 +96,10 @@ def get_Xtrain_Ytrain(root_dir,max_number_img,patch_size):
     img_patches = np.asarray([img_patches[i][j] for i in range(len(img_patches)) for j in range(len(img_patches[i]))])
     gt_patches =  np.asarray([gt_patches[i][j] for i in range(len(gt_patches)) for j in range(len(gt_patches[i]))])
 
-    X = np.asarray([ extract_features_2d(img_patches[i]) for i in range(len(img_patches))])
+    if(in2d):
+        X = np.asarray([ extract_features_2d(img_patches[i]) for i in range(len(img_patches))])
+    else:
+        X = np.asarray([ extract_features(img_patches[i]) for i in range(len(img_patches))])
     Y = np.asarray([value_to_class(np.mean(gt_patches[i])) for i in range(len(gt_patches))])
     return X,Y
 
