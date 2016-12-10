@@ -2,12 +2,34 @@ import matplotlib.image as mpimg
 import numpy as np
 import matplotlib.pyplot as plt
 import os,sys
+import matplotlib.image as mpimg
+import re
+import scipy.misc
 from PIL import Image
 from feature_extraction import *
 
 #========================================== To Submit ======================================
+def create_mask_pred_all_test(submission_path,test_dir_path,classifier,patch_size):
+    """This method will use classifier to predict the mask of each image, 
+    save the mask in the respective test folders
+    and finally output the submission file in submission path
+    """
+    masks_file_names = []
+    for i in range(1,51):
+        suffix = 'test_{}/test_{}.png'.format(i,i)
+        img_path = test_dir_path + suffix
+        # We compute the mask
+        predicted_im = create_mask_for_test_image(img_path,classifier,patch_size)
+        suffix_pred = 'test_{}/test_{}_mask.png'.format(i,i)
+        pred_path = test_dir_path + suffix_pred
+        masks_file_names.append(pred_path)
+        # We save the mask
+        scipy.misc.imsave(pred_path, predicted_im)
+    masks_to_submission(submission_path,masks_file_names)
+
+
 def create_mask_for_test_image(img_path,classifier,patch_size):
-    # Will output a mask for the image located at image_size, using classifier.predict 
+    """output a mask for the image located at image_path, using classifier.predict"""
     img = load_image(img_path)
     img_patches = img_crop(img, patch_size, patch_size)
     
@@ -18,6 +40,39 @@ def create_mask_for_test_image(img_path,classifier,patch_size):
     Zi = classifier.predict(Xi)
     predicted_im = label_to_img(w, h, patch_size, patch_size, Zi)
     return predicted_im
+
+foreground_threshold = 0.25 # percentage of pixels > 1 required to assign a foreground label to a patch
+
+# assign a label to a patch
+def patch_to_label(patch):
+    df = np.mean(patch)
+    if df > foreground_threshold:
+        return 1
+    else:
+        return 0
+
+
+def mask_to_submission_strings(image_filename):
+    """Reads a single image and outputs the strings that should go into the submission file"""
+    # we get the very last element of the path, to get the filename
+    filename = re.split('\/+', image_filename)[-1]
+    img_number = int(re.search(r"\d+", filename).group(0))
+    im = mpimg.imread(image_filename)
+    patch_size = 16
+    for j in range(0, im.shape[1], patch_size):
+        for i in range(0, im.shape[0], patch_size):
+            patch = im[i:i + patch_size, j:j + patch_size]
+            label = patch_to_label(patch)
+            yield("{:03d}_{}_{},{}".format(img_number, j, i, label))
+
+
+def masks_to_submission(submission_filename, image_filenames):
+    """Converts images into a submission file"""
+    with open(submission_filename, 'w') as f:
+        f.write('id,prediction\n')
+        for i in range(len(image_filenames)):
+            fn = image_filenames[i]
+            f.writelines('{}\n'.format(s) for s in mask_to_submission_strings(fn))
     
 
 #========================================== To Load ======================================
@@ -55,6 +110,27 @@ def load_train(root_dir,max_number_img = 10):
     gt_imgs = [load_image(gt_dir + files[i]) for i in range(n)]
     return imgs,gt_imgs
 
+def balance_training_set(X_train,Y_train):
+    """Will balance the training set so that we train on the same amount of sample for each class"""
+    print ('Balancing training data...')
+    idx0 = [i for i, j in enumerate(Y_train) if j == 0]
+    idx1 = [i for i, j in enumerate(Y_train) if j == 1]
+    c0_old = len(idx0)
+    c1_old = len(idx1)
+    min_c = min(c0_old, c1_old)
+
+    new_indices = idx0[0:min_c] + idx1[0:min_c]
+    print (len(new_indices))
+    Y_train = Y_train[new_indices]
+    X_train = X_train[new_indices,:]
+    assert Y_train.shape[0] == X_train.shape[0]
+
+    Y0 = [i for i, j in enumerate(Y_train) if j == 0]
+    Y1 = [i for i, j in enumerate(Y_train) if j == 1]
+    c0_new = len(Y0)
+    c1_new = len(Y1)
+    print("Old (c0,c1) = ({},{})\nNew (c0,c1) = ({},{})".format(c0_old,c1_old,c0_new,c1_new))
+    return X_train,Y_train
 
 def get_Xtest(root_dir,patch_size):
     imgs = load_test(root_dir)
@@ -69,12 +145,9 @@ def get_Xtest(root_dir,patch_size):
 def load_test(root_dir):
     #root_dir should be the folder in which you have training and test_set_images
     test_dir = root_dir + "test_set_images/"
-    test_folders = os.listdir(test_dir)
     imgs = []
-    for i in range(len(test_folders)):
-        if test_folders[i].startswith("test_"):
-            img_files = os.listdir(test_dir + test_folders[i])
-            imgs.append(load_image(test_dir + test_folders[i]+'/'+img_files[0]))
+    for i in range(1,51):
+        imgs.append(load_image(test_dir + 'test_'+str(i)+'/'+'test_'+str(i)+'.png'))
     print("{} test images were loaded".format(len(imgs)))
     return imgs
 
