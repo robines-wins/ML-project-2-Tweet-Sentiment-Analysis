@@ -3,6 +3,11 @@ import re
 import itertools
 from collections import Counter
 
+def write(list_,name):
+    f = open(name,'w')
+    for s in list_:
+        f.write(str(s) + '\n')
+    f.close()
 
 def clean_str(string):
     """
@@ -43,6 +48,22 @@ def load_data_and_labels(positive_data_file, negative_data_file):
     negative_labels = [[1, 0] for _ in negative_examples]
     y = np.concatenate([positive_labels, negative_labels], 0)
     return [x_text, y]
+
+def load_data_eval(eval_data_file):
+    # Load data from files
+    eval_example = list(open(eval_data_file, "r").readlines())
+    eval_example = [s.strip() for s in eval_example]
+    #split id and text
+    eval_example = [s.split(',',1) for s in eval_example]
+    x_id, x_text = zip(*eval_example)
+
+    # (optionnal) write list on file for check
+    write(x_id,"x_id.txt")
+    write(x_text,"x_text.txt")
+
+    # Split by words
+    x_text = [clean_str(sent) for sent in x_text]
+    return x_id, x_text
 
 
 def batch_iter(data, batch_size, num_epochs, shuffle=True):
