@@ -3,8 +3,8 @@ import re
 import itertools
 from collections import Counter
 
-def write(list_,name):
-    f = open(name,'w')
+def write(list_,name,path='.'):
+    f = open(path+'/'+name,'w')
     for s in list_:
         f.write(str(s) + '\n')
     f.close()

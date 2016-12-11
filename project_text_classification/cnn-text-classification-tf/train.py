@@ -134,6 +134,9 @@ with tf.Graph().as_default():
         # Write vocabulary
         vocab_processor.save(os.path.join(out_dir, "vocab"))
 
+        #write list of flags
+        data_helpers.write(paraml,"train_flags.txt",str(out_dir))
+
         # Initialize all variables
         sess.run(tf.global_variables_initializer())
 
