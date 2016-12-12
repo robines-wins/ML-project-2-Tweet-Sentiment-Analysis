@@ -40,7 +40,6 @@ for attr, value in sorted(FLAGS.__flags.items()):
     print("{}={}".format(attr.upper(), value))
     paraml.append("{}={}".format(attr.upper(), value))
 print("")
-data_helpers.write(paraml,"flag_list.txt")
 
 
 # Data Preparatopn
