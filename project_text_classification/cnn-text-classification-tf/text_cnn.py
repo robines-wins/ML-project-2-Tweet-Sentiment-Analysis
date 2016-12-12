@@ -10,6 +10,15 @@ class TextCNN(object):
     def __init__(
       self, sequence_length, num_classes, vocab_size,
       embedding_size, filter_sizes, num_filters, l2_reg_lambda=0.0):
+        """
+        IN : 
+        sequence_length :   the length of our sentences (we padded all senetences such that they would all have length equal to the max length accross dataset)
+        num_class :         the number of classes (here two : positive or negative feeling)
+        vocab_size :        the size of the vocabulary
+        embedding_size :    dimensionality of our embeddings (mapping from a word to a word representation)
+        filter_sizes :      number of words we want our filters to cover
+        num_filters :       the number of filters per filter size (e.g. if we have filter sizes = [3,4,5] and num_filters = 2, we will have a total number of filter of 2*3 = 6)
+        """
 
         # Placeholders for input, output and dropout
         self.input_x = tf.placeholder(tf.int32, [None, sequence_length], name="input_x")
@@ -32,7 +41,7 @@ class TextCNN(object):
         for i, filter_size in enumerate(filter_sizes):
             with tf.name_scope("conv-maxpool-%s" % filter_size):
                 # Convolution Layer
-                filter_shape = [filter_size, embedding_size, 1, num_filters]
+                filter_shape = [filter_size, embedding_size, 1, num_filters] 
                 W = tf.Variable(tf.truncated_normal(filter_shape, stddev=0.1), name="W")
                 b = tf.Variable(tf.constant(0.1, shape=[num_filters]), name="b")
                 conv = tf.nn.conv2d(
@@ -54,7 +63,7 @@ class TextCNN(object):
 
         # Combine all the pooled features
         num_filters_total = num_filters * len(filter_sizes)
-        self.h_pool = tf.concat(3, pooled_outputs)
+        self.h_pool = tf.concat(3, pooled_outputs) # Concatenate the pooled features along the 3rd dimension
         self.h_pool_flat = tf.reshape(self.h_pool, [-1, num_filters_total])
 
         # Add dropout
