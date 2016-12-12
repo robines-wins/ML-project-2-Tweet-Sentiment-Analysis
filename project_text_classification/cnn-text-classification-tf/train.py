@@ -106,7 +106,7 @@ with tf.Graph().as_default():
         grad_summaries_merged = tf.merge_summary(grad_summaries)
 
         # Output directory for models and summaries
-        timestamp = str(int(time.time()))
+        timestamp =  time.strftime('%Y-%m-%d-%H-%M-%S') #str(int(time.time()))
         out_dir = os.path.abspath(os.path.join(os.path.curdir, "runs", timestamp))
         print("Writing to {}\n".format(out_dir))
 
