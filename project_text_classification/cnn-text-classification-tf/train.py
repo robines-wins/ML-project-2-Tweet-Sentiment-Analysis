@@ -95,14 +95,14 @@ with tf.Graph().as_default():
         train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
         # Keep track of gradient values and sparsity (optional)
-        grad_summaries = []
-        for g, v in grads_and_vars:
-            if g is not None:
-                grad_hist_summary = tf.histogram_summary("{}/grad/hist".format(v.name), g)
-                sparsity_summary = tf.scalar_summary("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
-                grad_summaries.append(grad_hist_summary)
-                grad_summaries.append(sparsity_summary)
-        grad_summaries_merged = tf.merge_summary(grad_summaries)
+        #grad_summaries = []
+        #for g, v in grads_and_vars:
+        #    if g is not None:
+        #        grad_hist_summary = tf.histogram_summary("{}/grad/hist".format(v.name), g)
+        #        sparsity_summary = tf.scalar_summary("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
+        #        grad_summaries.append(grad_hist_summary)
+        #        grad_summaries.append(sparsity_summary)
+        #grad_summaries_merged = tf.merge_summary(grad_summaries)
 
         # Output directory for models and summaries
         timestamp =  time.strftime('%Y-%m-%d-%H-%M-%S') #str(int(time.time()))
@@ -114,7 +114,8 @@ with tf.Graph().as_default():
         acc_summary = tf.scalar_summary("accuracy", cnn.accuracy)
 
         # Train Summaries
-        train_summary_op = tf.merge_summary([loss_summary, acc_summary, grad_summaries_merged])
+        #train_summary_op = tf.merge_summary([loss_summary, acc_summary, grad_summaries_merged])
+        train_summary_op = tf.merge_summary([loss_summary, acc_summary])
         train_summary_dir = os.path.join(out_dir, "summaries", "train")
         train_summary_writer = tf.train.SummaryWriter(train_summary_dir, sess.graph)
 
