@@ -4,7 +4,7 @@ import numpy as np
 
 class TextCNN(object):
     """
-    A CNN for text classification.
+    A Convolutional Neural Network for text classification.
     Uses an embedding layer, followed by a convolutional, max-pooling and softmax layer.
     """
     def __init__(
@@ -18,6 +18,7 @@ class TextCNN(object):
         embedding_size :    dimensionality of our embeddings (mapping from a word to a word representation)
         filter_sizes :      number of words we want our filters to cover
         num_filters :       the number of filters per filter size (e.g. if we have filter sizes = [3,4,5] and num_filters = 2, we will have a total number of filter of 2*3 = 6)
+        L2_reg_lambda :     the lambda of our regularizer using the euclidean norm (Default : 0.0 => not activated)
         """
 
         # Placeholders for input, output and dropout

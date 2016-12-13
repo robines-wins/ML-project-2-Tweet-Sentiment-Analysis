@@ -40,7 +40,7 @@ for attr, value in sorted(FLAGS.__flags.items()):
 print("")
 
 
-# Data Preparatopn
+# Data Preparation
 # ==================================================
 
 # Load data
