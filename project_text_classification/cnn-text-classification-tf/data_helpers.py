@@ -58,8 +58,8 @@ def load_data_eval(eval_data_file):
     x_id, x_text = zip(*eval_example)
 
     # (optionnal) write list on file for check
-    write(x_id,"x_id.txt")
-    write(x_text,"x_text.txt")
+    #write(x_id,"x_id.txt")
+    #write(x_text,"x_text.txt")
 
     # Split by words
     x_text = [clean_str(sent) for sent in x_text]
