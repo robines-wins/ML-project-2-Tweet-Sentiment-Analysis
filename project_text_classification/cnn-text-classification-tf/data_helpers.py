@@ -17,7 +17,7 @@ def delete_duplicate_lines(x_raw):
     x_raw :  clean data (list of clean sentences)
     y : associated labels
     """
-    print("Deleting duplicates in data...")
+    print("\nDeleting duplicates in data...")
     seen = set()
     unique_x = []
     for line in x_raw:
@@ -25,7 +25,7 @@ def delete_duplicate_lines(x_raw):
             seen.add(line)
             unique_x.append(line)
     perc_duplicate = (len(x_raw)-len(unique_x))/(len(x_raw))*100
-    print("Found : {}% duplicates in the input".format(perc_duplicate,len(x_raw)))
+    print("Found : {}% duplicates in the input\n".format(perc_duplicate,len(x_raw)))
     return unique_x
 
 def clean_str(string):
