@@ -53,6 +53,7 @@ x_text, y = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.ne
 max_document_length = max([len(x.split(" ")) for x in x_text])
 vocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length)
 x = np.array(list(vocab_processor.fit_transform(x_text)))
+data_helpers.write(x,"x_vec.txt")
 
 # Randomly shuffle data
 np.random.seed(10)
