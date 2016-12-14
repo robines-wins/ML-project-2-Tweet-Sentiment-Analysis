@@ -3,8 +3,9 @@ import re
 import itertools
 from collections import Counter
 
-def write(list_,name):
-    f = open(name,'w')
+def write(list_,name,path='.'):
+    f = open(path+'/'+name,'w')
+    f.write(str(type(list_.head)) + '\n')
     for s in list_:
         f.write(str(s) + '\n')
     f.close()
@@ -17,7 +18,7 @@ def delete_duplicate_lines(x_raw):
     x_raw :  clean data (list of clean sentences)
     y : associated labels
     """
-    print("Deleting duplicates in data...")
+    print("\nDeleting duplicates in data...")
     seen = set()
     unique_x = []
     for line in x_raw:
@@ -25,12 +26,12 @@ def delete_duplicate_lines(x_raw):
             seen.add(line)
             unique_x.append(line)
     perc_duplicate = (len(x_raw)-len(unique_x))/(len(x_raw))*100
-    print("Found : {}% duplicates in the input".format(perc_duplicate,len(x_raw)))
+    print("Found : {}% duplicates in the input\n".format(perc_duplicate,len(x_raw)))
     return unique_x
 
 def clean_str(string):
     """
-    Tokenization/string cleaning for all datasets except for SST.
+    Tokenization/string cleaning for all datasets 
     Original taken from https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py
     """
     # We get rid of everything that isn't a alphanumerical or in (),!?'`
@@ -102,8 +103,8 @@ def load_data_eval(eval_data_file):
     x_id, x_text = zip(*eval_example)
 
     # (optionnal) write list on file for check
-    write(x_id,"x_id.txt")
-    write(x_text,"x_text.txt")
+    #write(x_id,"x_id.txt")
+    #write(x_text,"x_text.txt")
 
     # Split by words
     x_text = [clean_str(sent) for sent in x_text]
