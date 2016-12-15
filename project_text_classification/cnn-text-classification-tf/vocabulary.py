@@ -1,10 +1,10 @@
 import word2vec
 import numpy as np
-#import cPickle as pickle
+import pickle
 
 class Vocabulary(object):
 
-	def __init__(self,maxlength, w2v=None,vocabulary=None,dim=300):
+	def __init__(self,maxlength, w2v=None,dim=300):
 		self.maxlength = maxlength
 		self.w2v = w2v
 		self.vocsize = 1
@@ -43,4 +43,20 @@ class Vocabulary(object):
 	def embedingMatrix(self):
 		return np.array(self.embeding)
 
-	#def __getstate__(self):
+	def save(self, filename):
+		f = open(filename,'wb')
+		pickle.dump(self,f,-1)
+		f.close()
+
+	@classmethod
+	def restore(cls, filename, w2c = None):
+  		f = open(filename,'rb')
+  		voc = pickle.load(f)
+  		f.close()
+  		voc.w2c = w2c
+  		return voc
+
+	def __getstate__(self):
+		tosave = self.__dict__.copy()
+		tosave['w2v'] = None
+		return tosave
