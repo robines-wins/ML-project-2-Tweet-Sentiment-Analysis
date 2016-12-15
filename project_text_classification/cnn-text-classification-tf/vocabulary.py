@@ -19,7 +19,8 @@ class Vocabulary(object):
 				if w not in self.vocab:
 					self.vocab[w]=self.vocsize
 					self.vocsize += 1
-					if self.w2v != None and self.w2v.isin(w):
+					if self.w2v != None and self.w2v.isin(w):	
+						print(w, " is in w2v")
 						self.embeding.append(self.w2v.get(w))
 					else:
 						self.embeding.append(np.random.uniform(low=-1.0,high=1.0,size=self.dim))
@@ -32,7 +33,6 @@ class Vocabulary(object):
 				if idx >= self.maxlength:
 					break
 				if w in self.vocab:
-					print(w, " is in w2v")
 					vec[idx] = self.vocab[w]
 			tr.append(vec)
 		return tr
