@@ -29,33 +29,6 @@ def delete_duplicate_lines(x_raw):
     print("Found : {}% duplicates in the input\n".format(perc_duplicate,len(x_raw)))
     return unique_x
 
-def clean_str(string):
-    """
-    Tokenization/string cleaning for all datasets 
-    Original taken from https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py
-    """
-    # We get rid of everything that isn't a alphanumerical or in (),!?'`
-    # string = re.sub(r"[^A-Za-z0-9(),!?\'\`]", " ", string)
-    string = re.sub(r"[^A-Za-z0-9(),!?\'\`:-@]", " ", string)
-
-
-    # We then make sure that we add space for words like don't ==> do n't
-    string = re.sub(r"\'s", " \'s", string)
-    string = re.sub(r"\'ve", " \'ve", string)
-    string = re.sub(r"n\'t", " n\'t", string)
-    string = re.sub(r"\'re", " \'re", string)
-    string = re.sub(r"\'d", " \'d", string)
-    string = re.sub(r"\'ll", " \'ll", string)
-
-    # Finally we make sure that we have well tokenized the ponctuations and parenthesis
-    string = re.sub(r",", " , ", string)
-    string = re.sub(r"!", " ! ", string)
-    string = re.sub(r"\(", " \( ", string)
-    string = re.sub(r"\)", " \) ", string)
-    string = re.sub(r"\?", " \? ", string)
-    string = re.sub(r"\s{2,}", " ", string)
-    return string.strip().lower()
-
 
 def load_data_and_labels(positive_data_file, negative_data_file):
     """
@@ -77,7 +50,6 @@ def load_data_and_labels(positive_data_file, negative_data_file):
 
     # Split by words
     x_text = positive_examples + negative_examples
-    x_text = [clean_str(sent) for sent in x_text]
 
     # Generate labels
     positive_labels = [[0, 1] for _ in positive_examples]
@@ -107,7 +79,6 @@ def load_data_eval(eval_data_file):
     #write(x_text,"x_text.txt")
 
     # Split by words
-    x_text = [clean_str(sent) for sent in x_text]
     return x_id, x_text
 
 

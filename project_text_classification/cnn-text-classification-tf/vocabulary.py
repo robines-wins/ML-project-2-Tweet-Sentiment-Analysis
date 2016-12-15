@@ -14,7 +14,7 @@ class Vocabulary(object):
 
 
 	def fit(self,strlist):
-				"""
+		"""
 		Builds the vocabulariy from strlist. This will be done in two possible ways. 
 
 		1. if a pretrained vector set w2v was passed in the constructor then it will use it for each word to check 
@@ -65,7 +65,7 @@ class Vocabulary(object):
 		return tr
 
 	def fit_transform(self,strlist):
-				"""
+		"""
 		Will first build the vocabulary and then return the list of vectors corresponding to each sentences
 
 		IN : 
