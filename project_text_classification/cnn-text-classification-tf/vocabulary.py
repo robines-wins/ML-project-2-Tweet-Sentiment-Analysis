@@ -14,6 +14,20 @@ class Vocabulary(object):
 
 
 	def fit(self,strlist):
+				"""
+		Builds the vocabulariy from strlist. This will be done in two possible ways. 
+
+		1. if a pretrained vector set w2v was passed in the constructor then it will use it for each word to check 
+		if it is already in this set.
+			- if it is in this set, it will assign to a given word the pretrained vector
+			- otherwise it will assign a vector randomly generated.
+		2. if no pretrained vector set was passed then all words will be assigned to a randomly distributed vector.
+
+		IN : 
+		self :		the vocabulary object
+		strlist:	the list of of senetences for which we want to build a vocabulary
+		"""
+
 		for s in strlist:
 			for w in s.split():
 				if w not in self.vocab:
@@ -26,6 +40,19 @@ class Vocabulary(object):
 						self.embeding.append(np.random.uniform(low=-1.0,high=1.0,size=self.dim))
 
 	def transform(self,strlist):
+		"""
+		Will use the vocabulary built by fit(.) to transform the list of tweets into a list of 
+		vectors. Each vector corresponds to a sentence and contains the index in the embedding 
+		of the given word (obtained from the vocabulary.
+
+		IN : 
+		self :		the vocabulary object
+		strlist:	the list of of senetences for which we want to build a vocabulary
+
+		OUT:
+		list of vectors of same size than the number of tweets
+		"""
+
 		tr = []
 		for s in strlist:
 			vec = np.zeros(self.maxlength,np.int64)
@@ -38,10 +65,31 @@ class Vocabulary(object):
 		return tr
 
 	def fit_transform(self,strlist):
+				"""
+		Will first build the vocabulary and then return the list of vectors corresponding to each sentences
+
+		IN : 
+		self :		the vocabulary object
+		strlist:	the list of of senetences for which we want to build a vocabulary
+
+		OUT:
+		list of vectors of same size than the number of tweets
+		"""
+
 		self.fit(strlist)
 		return self.transform(strlist)
 
 	def embeddingMatrix(self):
+		"""
+		Transforms the embeding list into a np array
+
+		IN : 
+		self :		the vocabulary object
+
+		OUT:
+		The embeding matrix
+		"""
+
 		return np.array(self.embeding, dtype='float32')
 
 	def save(self, filename):
