@@ -2,7 +2,7 @@ Dossier des runs :
 /Users/hugomoreau/Dropbox/Etudes/Master/Pattern\ classification\ and\ machine\ learning/Projects/Project\ -\ 2/project_text_classification/cnn-text-classification-tf/runs/1481533988/summaries
 
 Lancement du train : 
-./train.py --batch_size=256 --num_epochs=4 --evaluate_every=50 --log_device_placement=True 
+./train.py --batch_size=256 --num_epochs=1 --evaluate_every=50 
 
 Lancement d'un test d'accuracy sur l'ensemble du training set : 
 ./eval.py --eval_train --checkpoint_dir="./runs/1481556096/checkpoints/"

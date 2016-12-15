@@ -93,6 +93,9 @@ def load_data_eval(eval_data_file):
     IN : 
     eval_data_file :    path to the data on which we wish to run our evaluation
     negative_data_file :    path to the negative data file
+
+    OUT : 
+    split senetences and labels from the evaluation data
     """
 
     # Load data from files

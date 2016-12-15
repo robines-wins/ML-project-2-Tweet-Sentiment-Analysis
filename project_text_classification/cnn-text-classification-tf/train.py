@@ -10,8 +10,7 @@ from text_cnn import TextCNN
 import vocabulary
 import word2vec
 
-def train(FLAGS, w2v = None):
-
+def train(FLAGS, w2v = None,vocab=None):
     print("\nParameters:")
     paraml = []
     for attr, value in sorted(FLAGS.__flags.items()):
@@ -28,9 +27,14 @@ def train(FLAGS, w2v = None):
     print("Loading data...")
     x_text, y = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.negative_data_file)
 
-    # Build vocabulary
-    max_document_length = max([len(x.split(" ")) for x in x_text])
-    vocab_processor = vocabulary.Vocabulary(max_document_length,w2v,FLAGS.embedding_dim)
+
+    if vocab : 
+        vocab_processor = vocab
+    else :
+        # Build vocabulary
+        max_document_length = max([len(x.split(" ")) for x in x_text])
+        vocab_processor = vocabulary.Vocabulary(max_document_length,w2v,FLAGS.embedding_dim)
+    
     x = np.array(vocab_processor.fit_transform(x_text))
     #data_helpers.write(x,"x2_vec.txt")
 
@@ -135,6 +139,7 @@ def train(FLAGS, w2v = None):
                 time_str = datetime.datetime.now().isoformat()
                 print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
                 train_summary_writer.add_summary(summaries, step)
+                return loss,accuracy
 
             def dev_step(x_batch, y_batch, writer=None):
                 """
@@ -152,23 +157,28 @@ def train(FLAGS, w2v = None):
                 print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
                 if writer:
                     writer.add_summary(summaries, step)
+                return loss,accuracy
 
             # Generate batches
             batches = data_helpers.batch_iter(
                 list(zip(x_train, y_train)), FLAGS.batch_size, FLAGS.num_epochs)
             # Training loop. For each batch...
+            last_test_loss = 0
+            last_train_loss = 0
+            last_test_accuracy = 0
+            last_train_accuracy = 0
             for batch in batches:
                 x_batch, y_batch = zip(*batch)
-                train_step(x_batch, y_batch)
+                last_train_loss,last_train_accuracy = train_step(x_batch, y_batch)
                 current_step = tf.train.global_step(sess, global_step)
                 if current_step % FLAGS.evaluate_every == 0:
                     print("\nEvaluation:")
-                    dev_step(x_dev, y_dev, writer=dev_summary_writer)
+                    last_test_loss,last_test_accuracy = dev_step(x_dev, y_dev, writer=dev_summary_writer)
                     print("")
                 if current_step % FLAGS.checkpoint_every == 0:
                     path = saver.save(sess, checkpoint_prefix, global_step=current_step)
                     print("Saved model checkpoint to {}\n".format(path))
-    return checkpoint_dir
+    return checkpoint_dir,last_test_loss,last_test_accuracy,last_train_loss,last_train_accuracy
 
 
 if __name__ == "__main__":
