@@ -106,5 +106,6 @@ if __name__ == '__main__':
 
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
-    w2v = word2vec.Word2vec()
-    eval(FLAGS,w2v)
+    #w2v = word2vec.Word2vec()
+    #eval(FLAGS,w2v)
+    eval(FLAGS)

@@ -2,9 +2,13 @@ import gensim
 
 class Word2vec(object):
 
-	def __init__(self, path_='../GoogleNews-vectors-negative300.bin.gz', binary=True):
+	def __init__(self, path_='../GoogleNews-vectors-negative300.bin.gz', binary=True,fromC = True):
 		print("\nloading word2vec database")
-		self.model = gensim.models.Word2Vec.load_word2vec_format(path_, binary=binary)
+		if fromC:
+			self.model = gensim.models.Word2Vec.load_word2vec_format(path_, binary=binary)
+		else:
+			self.model = gensim.models.Word2Vec.load(path_)
+		self.model.init_sims(replace=True)
 		print("\nloading done !")
 
 	def isin(self, word):

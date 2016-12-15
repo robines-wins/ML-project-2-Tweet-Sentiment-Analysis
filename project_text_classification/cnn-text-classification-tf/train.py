@@ -192,6 +192,7 @@ if __name__ == "__main__":
     tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
     tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
     #tf.flags.DEFINE_boolean("use_w2v", False, "use precomputed word2vec vector")
+
     # Misc Parameters
     tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
     tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
@@ -199,5 +200,6 @@ if __name__ == "__main__":
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
 
+    #w2v = word2vec.Word2vec("../tweetdatabase_word2vec",fromC = False)
     w2v = word2vec.Word2vec()
     train(FLAGS,w2v)

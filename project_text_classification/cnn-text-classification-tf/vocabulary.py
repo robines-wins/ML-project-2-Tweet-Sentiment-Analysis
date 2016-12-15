@@ -9,7 +9,7 @@ class Vocabulary(object):
 		self.w2v = w2v
 		self.vocsize = 1
 		self.vocab = {}
-		self.embeding = [np.zeros(dim)]
+		self.embedding = [np.zeros(dim)]
 		self.dim=dim
 
 
@@ -34,10 +34,10 @@ class Vocabulary(object):
 					self.vocab[w]=self.vocsize
 					self.vocsize += 1
 					if self.w2v != None and self.w2v.isin(w):	
-						print(w, " is in w2v")
-						self.embeding.append(self.w2v.get(w))
+						#print(w, " is in w2v")
+						self.embedding.append(self.w2v.get(w))
 					else:
-						self.embeding.append(np.random.uniform(low=-1.0,high=1.0,size=self.dim))
+						self.embedding.append(np.random.uniform(low=-1.0,high=1.0,size=self.dim))
 
 	def transform(self,strlist):
 		"""
@@ -90,7 +90,7 @@ class Vocabulary(object):
 		The embeding matrix
 		"""
 
-		return np.array(self.embeding, dtype='float32')
+		return np.array(self.embedding, dtype='float32')
 
 	def save(self, filename):
 		f = open(filename,'wb')
@@ -98,11 +98,11 @@ class Vocabulary(object):
 		f.close()
 
 	@classmethod
-	def restore(cls, filename, w2c = None):
+	def restore(cls, filename, w2v = None):
   		f = open(filename,'rb')
   		voc = pickle.load(f)
   		f.close()
-  		voc.w2c = w2c
+  		voc.w2v = w2v
   		return voc
 
 	def __getstate__(self):
