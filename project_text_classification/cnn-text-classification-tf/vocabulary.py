@@ -20,7 +20,7 @@ class Vocabulary(object):
 					self.vocab[w]=self.vocsize
 					self.vocsize += 1
 					if self.w2v != None and self.w2v.isin(w):
-						self.embeding.append(w2v.get(w))
+						self.embeding.append(self.w2v.get(w))
 					else:
 						self.embeding.append(np.random.uniform(low=-1.0,high=1.0,size=self.dim))
 
@@ -32,6 +32,7 @@ class Vocabulary(object):
 				if idx >= self.maxlength:
 					break
 				if w in self.vocab:
+					print(w, " is in w2v")
 					vec[idx] = self.vocab[w]
 			tr.append(vec)
 		return tr
@@ -40,8 +41,8 @@ class Vocabulary(object):
 		self.fit(strlist)
 		return self.transform(strlist)
 
-	def embedingMatrix(self):
-		return np.array(self.embeding)
+	def embeddingMatrix(self):
+		return np.array(self.embeding, dtype='float32')
 
 	def save(self, filename):
 		f = open(filename,'wb')

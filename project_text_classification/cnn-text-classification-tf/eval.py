@@ -7,10 +7,11 @@ import time
 import datetime
 import data_helpers
 from text_cnn import TextCNN
-from tensorflow.contrib import learn
+import vocabulary
+import word2vec
 import csv
 
-def eval(FLAGS):
+def eval(FLAGS, w2v = None):
     
     print("\nParameters:")
     for attr, value in sorted(FLAGS.__flags.items()):
@@ -30,8 +31,8 @@ def eval(FLAGS):
 
     # Map data into vocabulary
     vocab_path = os.path.join(FLAGS.checkpoint_dir, "..", "vocab")
-    vocab_processor = learn.preprocessing.VocabularyProcessor.restore(vocab_path)
-    x_test = np.array(list(vocab_processor.transform(x_raw)))
+    vocab_processor = vocabulary.Vocabulary.restore(vocab_path,w2v)
+    x_test = np.array(vocab_processor.transform(x_raw))
 
     print("\nEvaluating...\n")
 
@@ -105,4 +106,5 @@ if __name__ == '__main__':
 
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
-    eval(FLAGS)
+    w2v = word2vec.Word2vec()
+    eval(FLAGS,w2c)
