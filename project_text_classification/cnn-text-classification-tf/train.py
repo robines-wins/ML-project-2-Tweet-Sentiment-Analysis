@@ -8,8 +8,9 @@ import datetime
 import data_helpers
 from text_cnn import TextCNN
 import vocabulary
+import word2vec
 
-def train(FLAGS):
+def train(FLAGS, w2v = None):
 
     print("\nParameters:")
     paraml = []
@@ -17,6 +18,7 @@ def train(FLAGS):
         print("{}={}".format(attr.upper(), value))
         paraml.append("{}={}".format(attr.upper(), value))
     print("")
+    np.random.seed(10)
 
 
     # Data Preparation
@@ -28,13 +30,12 @@ def train(FLAGS):
 
     # Build vocabulary
     max_document_length = max([len(x.split(" ")) for x in x_text])
-    vocab_processor = vocabulary.Vocabulary(max_document_length)
+    vocab_processor = vocabulary.Vocabulary(max_document_length,w2v,FLAGS.embedding_dim)
     x = np.array(vocab_processor.fit_transform(x_text))
     #data_helpers.write(x,"x2_vec.txt")
 
 
     # Randomly shuffle data
-    np.random.seed(10)
     shuffle_indices = np.random.permutation(np.arange(len(y)))
     x_shuffled = x[shuffle_indices]
     y_shuffled = y[shuffle_indices]
@@ -44,7 +45,7 @@ def train(FLAGS):
     dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
     x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
     y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
-    print("Vocabulary Size: {:d}".format(len(vocab_processor.vocab)))
+    print("Vocabulary Size: {:d}".format(vocab_processor.vocsize))
     print("Train/Dev split: {:d}/{:d}".format(len(y_train), len(y_dev)))
 
 
@@ -60,10 +61,11 @@ def train(FLAGS):
             cnn = TextCNN(
                 sequence_length=x_train.shape[1],
                 num_classes=y_train.shape[1],
-                vocab_size=len(vocab_processor.vocabulary_),
+                vocab_size=vocab_processor.vocsize,
                 embedding_size=FLAGS.embedding_dim,
                 filter_sizes=list(map(int, FLAGS.filter_sizes.split(","))),
                 num_filters=FLAGS.num_filters,
+                embedding = vocab_processor.embeddingMatrix(),
                 l2_reg_lambda=FLAGS.l2_reg_lambda)
 
             # Define Training procedure
@@ -178,9 +180,9 @@ if __name__ == "__main__":
     tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the positive data.")
 
     # Model Hyperparameters
-    tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
+    tf.flags.DEFINE_integer("embedding_dim", 300, "Dimensionality of character embedding (default: 128)")
     tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
-    tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
+    tf.flags.DEFINE_integer("num_filters", 300, "Number of filters per filter size (default: 128)")
     tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
     tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularizaion lambda (default: 0.0)")
 
@@ -189,10 +191,13 @@ if __name__ == "__main__":
     tf.flags.DEFINE_integer("num_epochs", 200, "Number of training epochs (default: 200)")
     tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
     tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
+    #tf.flags.DEFINE_boolean("use_w2v", False, "use precomputed word2vec vector")
     # Misc Parameters
     tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
     tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
 
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
-    train(FLAGS)
+
+    w2v = word2vec.Word2vec()
+    train(FLAGS,w2v)
