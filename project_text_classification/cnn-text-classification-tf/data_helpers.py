@@ -5,7 +5,7 @@ from collections import Counter
 
 def write(list_,name,path='.'):
     f = open(path+'/'+name,'w')
-    f.write(str(type(list_.head)) + '\n')
+    f.write(str(type(list_[0])) + '\n')
     for s in list_:
         f.write(str(s) + '\n')
     f.close()

@@ -7,7 +7,7 @@ import time
 import datetime
 import data_helpers
 from text_cnn import TextCNN
-from tensorflow.contrib import learn
+import vocabulary
 
 def train(FLAGS):
 
@@ -28,9 +28,10 @@ def train(FLAGS):
 
     # Build vocabulary
     max_document_length = max([len(x.split(" ")) for x in x_text])
-    vocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length)
-    x = np.array(list(vocab_processor.fit_transform(x_text)))
-    data_helpers.write(x,"x_vec.txt")
+    vocab_processor = vocabulary.Vocabulary(max_document_length)
+    x = np.array(vocab_processor.fit_transform(x_text))
+    #data_helpers.write(x,"x2_vec.txt")
+
 
     # Randomly shuffle data
     np.random.seed(10)
@@ -43,7 +44,7 @@ def train(FLAGS):
     dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
     x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
     y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
-    print("Vocabulary Size: {:d}".format(len(vocab_processor.vocabulary_)))
+    print("Vocabulary Size: {:d}".format(len(vocab_processor.vocab)))
     print("Train/Dev split: {:d}/{:d}".format(len(y_train), len(y_dev)))
 
 
