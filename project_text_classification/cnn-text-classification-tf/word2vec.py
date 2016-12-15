@@ -16,7 +16,6 @@ class Word2vec(object):
 
 
 if __name__ == '__main__':
-	model = gensim.models.Word2Vec.load_word2vec_format('../GoogleNews-vectors-negative300.bin.gz', binary=True)
 	w2v = Word2vec()
 	while True:
 		input_ = input("=>")
