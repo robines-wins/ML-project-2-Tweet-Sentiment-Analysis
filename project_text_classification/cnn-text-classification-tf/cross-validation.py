@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-
 import tensorflow as tf
 import numpy as np
 import os
@@ -10,69 +9,34 @@ from text_cnn import TextCNN
 import vocabulary
 import word2vec
 
-def train(FLAGS, w2v = None,vocab=None):
-    """
-    Method to train our CNN
+def build_k_indices(y, k_fold, seed):
+    """build k groups of indices for k-fold."""
+    num_row = y.shape[0]
+    interval = int(num_row / k_fold) #50 000
+    np.random.seed(seed)
+    indices = np.random.permutation(num_row)
+    k_indices = [indices[k * interval: (k + 1) * interval]
+                 for k in range(k_fold)]
+    return np.array(k_indices)
 
-    IN : 
-    FLAGS :     the different parameters of the training (see below for further details)
-    w2v :       the word2vec that are pretrained (Default : None)
-    vocab :     the pre-built vocabulary it it exists (Default : None)
-
-    OUT : 
-    checkpoint_dir :        the directory where the checkpoints are stored
-    last_test_loss :        the last test loss that was computed (used to cross validate hyper-parameters)
-    last_test_accuracy :    the last test accuracy 
-    last_train_loss :       the last train loss
-    last_train_accuracy :   the last train accuracy
-    """
-
-
+def cross_validation(FLAGS,k_fold,x,y):
+    """Estimates the test error of a given hyperparameter choice by doing cv on 5-fold"""
+    
+    # Printing the parameters
     print("\nParameters:")
     paraml = []
     for attr, value in sorted(FLAGS.__flags.items()):
         print("{}={}".format(attr.upper(), value))
         paraml.append("{}={}".format(attr.upper(), value))
     print("")
-    np.random.seed(10)
-
 
     # Data Preparation
     # ==================================================
-
-    # Load data
-    print("Loading data...")
-    x_text, y = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.negative_data_file)
-
-
-    if vocab : 
-        vocab_processor = vocab
-    else :
-        # Build vocabulary
-        max_document_length = max([len(x.split(" ")) for x in x_text])
-        vocab_processor = vocabulary.Vocabulary(max_document_length,w2v,FLAGS.embedding_dim)
-    
-    x = np.array(vocab_processor.fit_transform(x_text))
-    #data_helpers.write(x,"x2_vec.txt")
-
-
-    # Randomly shuffle data
-    shuffle_indices = np.random.permutation(np.arange(len(y)))
-    x_shuffled = x[shuffle_indices]
-    y_shuffled = y[shuffle_indices]
-
-    # Split train/test set
-    # TODO: This is very crude, should use cross-validation
-    dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
-    x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
-    y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
-    print("Vocabulary Size: {:d}".format(vocab_processor.vocsize))
-    print("Train/Dev split: {:d}/{:d}".format(len(y_train), len(y_dev)))
-
+    seed = 3
+    k_fold_indices = build_k_indices(y, k_fold, seed)
 
     # Training
     # ==================================================
-
     with tf.Graph().as_default():
         session_conf = tf.ConfigProto(
           allow_soft_placement=FLAGS.allow_soft_placement,
@@ -80,8 +44,8 @@ def train(FLAGS, w2v = None,vocab=None):
         sess = tf.Session(config=session_conf)
         with sess.as_default():
             cnn = TextCNN(
-                sequence_length=x_train.shape[1],
-                num_classes=y_train.shape[1],
+                sequence_length=x.shape[1],
+                num_classes=y.shape[1],
                 vocab_size=vocab_processor.vocsize,
                 embedding_size=FLAGS.embedding_dim,
                 filter_sizes=list(map(int, FLAGS.filter_sizes.split(","))),
@@ -94,17 +58,7 @@ def train(FLAGS, w2v = None,vocab=None):
             optimizer = tf.train.AdamOptimizer(1e-3)
             grads_and_vars = optimizer.compute_gradients(cnn.loss)
             train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
-
-            # Keep track of gradient values and sparsity (optional)
-            #grad_summaries = []
-            #for g, v in grads_and_vars:
-            #    if g is not None:
-            #        grad_hist_summary = tf.histogram_summary("{}/grad/hist".format(v.name), g)
-            #        sparsity_summary = tf.scalar_summary("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
-            #        grad_summaries.append(grad_hist_summary)
-            #        grad_summaries.append(sparsity_summary)
-            #grad_summaries_merged = tf.merge_summary(grad_summaries)
-
+           
             # Output directory for models and summaries
             timestamp =  time.strftime('%Y-%m-%d-%H-%M-%S') 
             out_dir = os.path.abspath(os.path.join(os.path.curdir, "runs", timestamp))
@@ -191,51 +145,73 @@ def train(FLAGS, w2v = None,vocab=None):
                     writer.add_summary(summaries, step)
                 return loss,accuracy
 
-            # Generate batches
-            batches = data_helpers.batch_iter(
-                list(zip(x_train, y_train)), FLAGS.batch_size, FLAGS.num_epochs)
-            
-            # Training loop. For each batch... 
-            # We keep track of the last losses and accuracies
-            last_test_loss = 0
-            last_train_loss = 0
-            last_test_accuracy = 0
-            last_train_accuracy = 0
-            for batch in batches:
-                x_batch, y_batch = zip(*batch)
-                last_train_loss,last_train_accuracy = train_step(x_batch, y_batch)
-                current_step = tf.train.global_step(sess, global_step)
-                if current_step % FLAGS.evaluate_every == 0:
-                    print("\nEvaluation:")
-                    last_test_loss,last_test_accuracy = dev_step(x_dev, y_dev, writer=dev_summary_writer)
-                    print("")
-                if current_step % FLAGS.checkpoint_every == 0:
-                    path = saver.save(sess, checkpoint_prefix, global_step=current_step)
-                    print("Saved model checkpoint to {}\n".format(path))
-    return checkpoint_dir,last_test_loss,last_test_accuracy,last_train_loss,last_train_accuracy
+
+            test_losses = []
+            train_losses = []
+            test_accuracies = []
+            train_accuracies = []
+
+            for k in k_fold:
+                train_indices = k_indices[[i for i in range(len(k_indices)) if i != k]].ravel()
+                test_indices = k_indices[k]
+
+                x_train = x[train_indices]
+                y_train = y[train_indices]
+                x_test = x[test_indices]
+                y_test = y[test_indices]
+
+                # Generate batches
+                train_batches = data_helpers.batch_iter(
+                    list(zip(x_train, y_train)), FLAGS.batch_size, FLAGS.num_epochs)
+                test_batches = data_helpers.batch_iter(
+                    list(zip(x_test, y_test)), FLAGS.batch_size, FLAGS.num_epochs)
+                
+                # Training loop. For each batch... 
+                train_loss = 0
+                train_accuracy = 0
+                for batch in train_batches:
+                    x_batch, y_batch = zip(*batch)
+                    # We update the train loss and accuracy since as we go over the batch we keep training the NN
+                    train_loss,train_accuracy = train_step(x_batch, y_batch)
+
+                # Testing loop. For each batch...
+                test_loss = 0
+                test_accuracy = 0
+                for batch in test_batches:
+                    x_batch, y_batch = zip(*batch)
+                    # We update the train loss and accuracy since as we go over the batch we keep training the NN
+                    test_loss,test_accuracy = dev_step(x_batch, y_batch)
+
+                # Add the loss and accuracy to the lists
+                test_losses.append(test_loss)
+                test_accuracies.append(test_accuracy)
+                train_losses.append(train_loss)
+                train_accuracies.append(train_accuracy)
+
+            # Compute the mean over the fold
+            mean_test_l = np.mean(test_losses)
+            mean_train_l = np.mean(train_losses)
+            mean_train_a = np.mean(train_accuracies)
+            mean_test_a = np.mean(test_accuracies)
+    return mean_test_l,mean_test_a,mean_train_l,mean_train_a
 
 
-if __name__ == "__main__":
+def get_best_hyper_parameters():
     # Parameters
     # ==================================================
     # Data loading params
-    tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
     tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos.txt", "Data source for the positive data.")
     tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the positive data.")
-
     # Model Hyperparameters
     tf.flags.DEFINE_integer("embedding_dim", 300, "Dimensionality of character embedding (default: 128)")
     tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
-    tf.flags.DEFINE_integer("num_filters", 300, "Number of filters per filter size (default: 128)")
+    tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
     tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
     tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularizaion lambda (default: 0.0)")
-
     # Training parameters
-    tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-    tf.flags.DEFINE_integer("num_epochs", 200, "Number of training epochs (default: 200)")
-    tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
+    tf.flags.DEFINE_integer("batch_size", 256 , "Batch Size ")
+    tf.flags.DEFINE_integer("num_epochs", 1, "Number of training epochs (default: 1)")
     tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
-    #tf.flags.DEFINE_boolean("use_w2v", False, "use precomputed word2vec vector")
     # Misc Parameters
     tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
     tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
@@ -243,5 +219,48 @@ if __name__ == "__main__":
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
 
+    # Vocabulary 
     w2v = word2vec.Word2vec()
-    train(FLAGS,w2v)
+
+    print("Loading data...")
+    x_text, y = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.negative_data_file)
+    max_document_length = max([len(x.split(" ")) for x in x_text])
+    vocab_processor = vocabulary.Vocabulary(max_document_length,w2v,FLAGS.embedding_dim)
+    x = np.array(vocab_processor.fit_transform(x_text))
+    print("Vocabulary Size: {:d}".format(vocab_processor.vocsize))
+
+    #Hyperparameters to test
+    list_lambda = np.logspace(-4,1,10)
+    list_dropout_p = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
+
+    test_losses = np.empty([len(list_lambda),len(list_dropout_p)]) 
+    test_accuracies = np.empty([len(list_lambda),len(list_dropout_p)]) 
+    train_losses = np.empty([len(list_lambda),len(list_dropout_p)]) 
+    train_accuracies = np.empty([len(list_lambda),len(list_dropout_p)]) 
+    
+    for i_lamb,lamb in enumerate(list_lambda):
+        FLAGS.l2_reg_lambda = lamb
+        for i_drop,p in enumerate(list_dropout_p):
+            FLAGS.dropout_keep_prob = p
+            last_test_loss,last_test_accuracy,last_train_loss,last_train_accuracy = cross_validation(FLAGS,4,x,y)
+            test_losses[i_lamb,i_drop] = last_test_loss
+            test_accuracies[i_lamb,i_drop]=last_test_accuracy
+            train_losses[i_lamb,i_drop]=last_train_loss
+            train_accuracies[i_lamb,i_drop]=last_train_accuracy
+
+    print("We obtained : ")
+    for i_lamb,lamb in enumerate(list_lambda):
+        for i_drop,p in enumerate(list_dropout_p):
+            print("With (Lambda,p) = ({:.5f},{:.2f}) \ttrain_loss = {:.8f}\ttrain_accuracy = {:.8f}\ttest_loss = {:.8f}\ttest_accuracy = \t{:.8f}".format(lamb,p,train_losses[i_lamb,i_drop],train_accuracies[i_lamb,i_drop],test_losses[i_lamb,i_drop],test_accuracies[i_lamb,i_drop]))
+
+    indices = np.argmax(test_accuracies)
+    l_index,p_index = (indices/len(test_accuracies[0]),indices%len(test_accuracies[0]))
+    optimal_lambda = list_lambda[l_index]
+    optimal_dropout = list_dropout_p[d_index]
+    optimal_accuracy = test_accuracies[l_index,p_index]
+
+    print("\n(Lambda,p) which maximizes the accuracy =  ({:.5f},{:.2f}) with acc = {} ".format(optimal_lambda,optimal_dropout,optimal_accuracy))
+
+if __name__ == "__main__":
+    # Call get best
+    get_best_hyper_parameters()

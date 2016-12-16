@@ -16,3 +16,6 @@ Run réalisés:
 ./train.py --batch_size=256 --num_epochs=4 --evaluate_every=50 --log_device_placement=True (Sans duplicate checking)
 	Eval : 0.881025
 ./train.py --batch_size=256 --num_epochs=4 --evaluate_every=50 --log_device_placement=True (Avec duplicate checking)
+
+Launch tensorboard
+tensorboard --logdir=/Users/hugomoreau/Dropbox/Etudes/Master/Pattern\ classification\ and\ machine\ learning/Projects/Project\ 2/project_text_classification/cnn-text-classification-tf/runs/2016-12-15-21-57-20

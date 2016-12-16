@@ -12,7 +12,13 @@ import word2vec
 import csv
 
 def eval(FLAGS, w2v = None):
-    
+    """
+    Method to evaluate our model on a new model
+
+    IN : 
+    FLAGS :     the different parameters of the training (see below for further details)
+    w2v :       the word2vec that are pretrained (Default : None)
+    """
     print("\nParameters:")
     for attr, value in sorted(FLAGS.__flags.items()):
         print("{}={}".format(attr.upper(), value))
@@ -58,7 +64,7 @@ def eval(FLAGS, w2v = None):
             # Tensors we want to evaluate
             predictions = graph.get_operation_by_name("output/predictions").outputs[0]
 
-            # Generate batches for one epoch
+            # Generate batches 
             batches = data_helpers.batch_iter(list(x_test), FLAGS.batch_size, 1, shuffle=False)
 
             # Collect the predictions here
