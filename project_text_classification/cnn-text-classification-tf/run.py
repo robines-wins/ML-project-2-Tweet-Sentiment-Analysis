@@ -36,6 +36,6 @@ FLAGS._parse_flags()
 
 w2vfilelist =['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_neg_full.txt']
 generate_w2v.generate_word2vec(w2vfilelist,FLAGS.w2v_path,FLAGS.embedding_dim)
-w2v = word2vec.word2vec(FLAGS.w2v_path)
+w2v = word2vec.Word2vec(FLAGS.w2v_path)
 FLAGS.checkpoint_dir = train(FLAGS,w2v)
 eval(FLAGS,w2v)
