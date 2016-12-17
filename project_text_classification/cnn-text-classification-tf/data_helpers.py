@@ -4,6 +4,14 @@ import itertools
 from collections import Counter
 
 def write(list_,name,path='.'):
+    """
+    Utility function used to be able to write some files to be able to check what some methods do (e.g. load_data_eval)
+
+    IN : 
+    list_:  the list of lines to write in the file
+    name :  the file name
+    path :  the path where we want to write de file (Default: in the current directory)
+    """
     f = open(path+'/'+name,'w')
     f.write(str(type(list_[0])) + '\n')
     for s in list_:
@@ -17,6 +25,8 @@ def delete_duplicate_lines(x_raw):
     IN : 
     x_raw :  clean data (list of clean sentences)
     y : associated labels
+
+    return x_raw without the duplicated lines
     """
     print("\nDeleting duplicates in data...")
     seen = set()
@@ -38,6 +48,9 @@ def load_data_and_labels(positive_data_file, negative_data_file):
     IN : 
     positive_data_file :    path to the positive data file
     negative_data_file :    path to the negative data file
+
+    OUT : 
+    returns the input data x_text and the output in corresponding order
     """
     # Load data from files
     positive_examples = list(open(positive_data_file, "r").readlines())
@@ -58,13 +71,17 @@ def load_data_and_labels(positive_data_file, negative_data_file):
     return [x_text, y]
 
 def load_data_eval(eval_data_file):
-    """
+   """
     Loads the data on wich we wish to evaluate the model, 
     Returns split sentences and labels.
 
     IN : 
-    eval_data_file :    path to the data on which we wish to run our evaluation
+    eval_data_file :        path to the data on which we wish to run our evaluation
     negative_data_file :    path to the negative data file
+    check_write :           option to be able to write the output to a file to check the function well-behavior
+
+    OUT : 
+    split sentences along with their ids from the evaluation data
     """
 
     # Load data from files
@@ -91,6 +108,9 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
     batch size :    the number of (x,y) pairs per batch
     num_epochs :    the number of times we want to go through the full set of data
     shuffle :       each epoch through the full data set, if set to True we will use new random batches
+
+    OUT : 
+    yields a new batch 
     """
     data = np.array(data)
     data_size = len(data)

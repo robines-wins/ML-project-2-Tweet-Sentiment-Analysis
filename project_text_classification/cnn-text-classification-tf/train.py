@@ -11,7 +11,21 @@ import vocabulary
 import word2vec
 
 def train(FLAGS, w2v = None):
+    """
+    Method to train our CNN
 
+    IN : 
+    FLAGS :     the different parameters of the training (see below for further details)
+    w2v :       the word2vec that are pretrained (Default : None)
+    vocab :     the pre-built vocabulary it it exists (Default : None)
+
+    OUT : 
+    checkpoint_dir :        the directory where the checkpoints are stored
+    last_test_loss :        the last test loss that was computed (used to cross validate hyper-parameters)
+    last_test_accuracy :    the last test accuracy 
+    last_train_loss :       the last train loss
+    last_train_accuracy :   the last train accuracy
+    """
     print("\nParameters:")
     paraml = []
     for attr, value in sorted(FLAGS.__flags.items()):
