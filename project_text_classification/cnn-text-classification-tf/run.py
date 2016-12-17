@@ -5,8 +5,8 @@ import word2vec
 import tensorflow as tf
 
 #external files parameter
-tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos.txt", "Data source for the positive data.")
-tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the positive data.")
+tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos_full.txt", "Data source for the positive data.")
+tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg_full.txt", "Data source for the positive data.")
 tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to where word2vec comouted file will be stored ")
 tf.flags.DEFINE_string("checkpoint_dir", "", "Checkpoint directory from training run")
 tf.flags.DEFINE_string("eval_data_file", "../twitter-datasets/test_data.txt", "Data source for the evaluation.")
@@ -21,8 +21,8 @@ tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularizaion lambda (default: 0
 # Training parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
 tf.flags.DEFINE_integer("num_epochs", 1, "Number of training epochs (default: 200)")
-tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
-tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
+tf.flags.DEFINE_integer("evaluate_every", 200, "Evaluate model on dev set after this many steps (default: 100)")
+tf.flags.DEFINE_integer("checkpoint_every", 500, "Save model after this many steps (default: 100)")
 tf.flags.DEFINE_float("dev_sample_percentage", .01, "Percentage of the training data to use for validation")
 
 # Misc Parameters
