@@ -27,10 +27,11 @@ def train(FLAGS, w2v = None):
     # Load data
     print("Loading data...")
     x_text, y = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.negative_data_file)
-
+    _ , eval_text = data_helpers.load_data_eval(FLAGS.eval_data_file)
     # Build vocabulary
     max_document_length = max([len(x.split(" ")) for x in x_text])
     vocab_processor = vocabulary.Vocabulary(max_document_length,w2v,FLAGS.embedding_dim)
+    vocab_processor.fit(eval_text)
     x = np.array(vocab_processor.fit_transform(x_text))
     #data_helpers.write(x,"x2_vec.txt")
 
@@ -178,6 +179,7 @@ if __name__ == "__main__":
     tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
     tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos.txt", "Data source for the positive data.")
     tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the positive data.")
+    tf.flags.DEFINE_string("eval_data_file", "../twitter-datasets/test_data.txt", "Data source for the evaluation.")
 
     # Model Hyperparameters
     tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
