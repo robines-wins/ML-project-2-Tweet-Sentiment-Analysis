@@ -2,11 +2,12 @@ import gensim
 
 class Word2vec(object):
 
-	def __init__(self, path_='../GoogleNews-vectors-negative300.bin.gz', binary=True,fromC = True):
+	def __init__(self, path_='../tweetdatabase_word2vec'):
 		print("\nloading word2vec database")
-		if fromC:
-			self.model = gensim.models.Word2Vec.load_word2vec_format(path_, binary=binary)
-		else:
+		try:
+			self.model = gensim.models.Word2Vec.load_word2vec_format(path_, binary=True)
+		except UnicodeDecodeError as e:
+			print(e)
 			self.model = gensim.models.Word2Vec.load(path_)
 		self.model.init_sims(replace=True)
 		print("\nloading done !")

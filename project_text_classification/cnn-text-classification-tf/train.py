@@ -180,9 +180,9 @@ if __name__ == "__main__":
     tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the positive data.")
 
     # Model Hyperparameters
-    tf.flags.DEFINE_integer("embedding_dim", 300, "Dimensionality of character embedding (default: 128)")
+    tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
     tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
-    tf.flags.DEFINE_integer("num_filters", 300, "Number of filters per filter size (default: 128)")
+    tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
     tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
     tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularizaion lambda (default: 0.0)")
 
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     tf.flags.DEFINE_integer("num_epochs", 200, "Number of training epochs (default: 200)")
     tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
     tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
-    #tf.flags.DEFINE_boolean("use_w2v", False, "use precomputed word2vec vector")
+    tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to precomputed word2vec vector")
 
     # Misc Parameters
     tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -200,6 +200,6 @@ if __name__ == "__main__":
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
 
-    #w2v = word2vec.Word2vec("../tweetdatabase_word2vec",fromC = False)
-    w2v = word2vec.Word2vec()
+    w2v = word2vec.Word2vec(FLAGS.w2v_path,fromC = False)
+    #w2v = word2vec.Word2vec()
     train(FLAGS,w2v)
