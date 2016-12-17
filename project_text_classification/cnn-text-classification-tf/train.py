@@ -188,7 +188,7 @@ if __name__ == "__main__":
 
     # Training parameters
     tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-    tf.flags.DEFINE_integer("num_epochs", 200, "Number of training epochs (default: 200)")
+    tf.flags.DEFINE_integer("num_epochs", 1, "Number of training epochs (default: 200)")
     tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
     tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
     tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to precomputed word2vec vector")
@@ -200,6 +200,6 @@ if __name__ == "__main__":
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
 
-    w2v = word2vec.Word2vec(FLAGS.w2v_path,fromC = False)
+    w2v = word2vec.Word2vec(FLAGS.w2v_path)
     #w2v = word2vec.Word2vec()
     train(FLAGS,w2v)
