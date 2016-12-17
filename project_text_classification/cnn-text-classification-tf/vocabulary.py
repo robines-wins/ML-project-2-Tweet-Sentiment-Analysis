@@ -122,11 +122,11 @@ class Vocabulary(object):
 		filename:	the name of the file from which we wish to restore our vocabulary
 		w2v:		pretrained word2vectors dictionary (Default : None)
 		"""
-  		f = open(filename,'rb')
-  		voc = pickle.load(f)
-  		f.close()
-  		voc.w2v = w2v
-  		return voc
+		f = open(filename,'rb')
+		voc = pickle.load(f)
+		f.close()
+		voc.w2v = w2v
+		return voc
 
 	def __getstate__(self):
 		tosave = self.__dict__.copy()

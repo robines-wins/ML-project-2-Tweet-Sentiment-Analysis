@@ -71,7 +71,7 @@ def load_data_and_labels(positive_data_file, negative_data_file):
     return [x_text, y]
 
 def load_data_eval(eval_data_file):
-   """
+    """
     Loads the data on wich we wish to evaluate the model, 
     Returns split sentences and labels.
 
