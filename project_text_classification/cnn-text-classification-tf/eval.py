@@ -12,7 +12,13 @@ import word2vec
 import csv
 
 def eval(FLAGS, w2v = None):
-    
+    """
+    Method to evaluate our model on a new model
+
+    IN : 
+    FLAGS :     the different parameters of the training (see below for further details)
+    w2v :       the word2vec that are pretrained (Default : None)
+    """
     print("\nParameters:")
     for attr, value in sorted(FLAGS.__flags.items()):
         print("{}={}".format(attr.upper(), value))

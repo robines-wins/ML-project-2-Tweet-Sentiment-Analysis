@@ -5,6 +5,14 @@ import pickle
 class Vocabulary(object):
 
 	def __init__(self,maxlength, w2v=None,dim=300):
+		"""
+		Classic python initializer to construct the vocabulary object
+
+		IN :
+		maxlength :		the maximum length in terms of words of our sentences
+		w2v : 			pretrained word2vectors dictionary (Default : None)
+		dim : 			size of the vectors corresponding to each word (Default : 300 which is the size in w2v)
+		"""
 		self.maxlength = maxlength
 		self.w2v = w2v
 		self.vocsize = 1
@@ -93,17 +101,32 @@ class Vocabulary(object):
 		return np.array(self.embedding, dtype='float32')
 
 	def save(self, filename):
+		"""
+		Utility method allowing to save the vocabulary so that we can reuse it when evaluating the model on new inputs
+
+		IN:
+		self :		the vocabulary object
+		filename :	the name of the file to which we wish to save our vocabulary
+		"""
 		f = open(filename,'wb')
 		pickle.dump(self,f,-1)
 		f.close()
 
 	@classmethod
 	def restore(cls, filename, w2v = None):
-  		f = open(filename,'rb')
-  		voc = pickle.load(f)
-  		f.close()
-  		voc.w2v = w2v
-  		return voc
+		"""
+		Utility method allowing use to restore the vocabulary to reuse it on new inputs for the same model
+
+		IN:
+		cls:		the class itself (see definition of a classmethod)
+		filename:	the name of the file from which we wish to restore our vocabulary
+		w2v:		pretrained word2vectors dictionary (Default : None)
+		"""
+		f = open(filename,'rb')
+		voc = pickle.load(f)
+		f.close()
+		voc.w2v = w2v
+		return voc
 
 	def __getstate__(self):
 		tosave = self.__dict__.copy()
