@@ -19,6 +19,6 @@ def generate_word2vec(filelist,outputfile,dim = 128):
 	model.save(outputfile)
 
 if __name__ == "__main__":
-	filelist=['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_neg_full.txt']
+	filelist=['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_neg_full.txt','../twitter-datasets/test_data.txt']
 	outputfile = '../tweetdatabase_word2vec'
 	generate_word2vec(filelist,outputfile)
