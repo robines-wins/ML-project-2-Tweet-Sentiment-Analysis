@@ -115,5 +115,5 @@ if __name__ == '__main__':
 
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
-    w2v = word2vec.Word2vec(FLAGS.w2v_path) if FLAGS.w2v_path != "" else None #load the word2vec database, if path is empty use hot vector
+    w2v = word2vec.Word2vec(FLAGS.w2v_path) if FLAGS.w2v_path != "" else None #load the word2vec database, if path is empty use random vector
     eval(FLAGS,w2v)

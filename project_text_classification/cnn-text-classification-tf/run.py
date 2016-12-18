@@ -34,8 +34,12 @@ tf.flags.DEFINE_boolean("eval_train", False, "Evaluate on all training data")
 FLAGS = tf.flags.FLAGS
 FLAGS._parse_flags()
 
+#generate word2vec model
 w2vfilelist =['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_neg_full.txt','../twitter-datasets/test_data.txt']
 generate_w2v.generate_word2vec(w2vfilelist,FLAGS.w2v_path,FLAGS.embedding_dim)
+#wrap word2vec model
 w2v = word2vec.Word2vec(FLAGS.w2v_path)
-FLAGS.checkpoint_dir = train(FLAGS,w2v)
+#train our CNN and get back the directory of it
+FLAGS.checkpoint_dir,_,_ = train(FLAGS,w2v)
+#eval our evalution set using our model
 eval(FLAGS,w2v)

@@ -45,9 +45,8 @@ def train(FLAGS, w2v = None):
     # Build vocabulary
     max_document_length = max([len(x.split(" ")) for x in x_text])
     vocab_processor = vocabulary.Vocabulary(max_document_length,w2v,FLAGS.embedding_dim)
-    vocab_processor.fit(eval_text)
+    vocab_processor.fit(eval_text) #maje sur all word of evaluation set are in the embeding matrix
     x = np.array(vocab_processor.fit_transform(x_text))
-    #data_helpers.write(x,"x2_vec.txt")
 
 
     # Randomly shuffle data
@@ -56,7 +55,6 @@ def train(FLAGS, w2v = None):
     y_shuffled = y[shuffle_indices]
 
     # Split train/test set
-    # TODO: This is very crude, should use cross-validation
     dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
     x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
     y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
@@ -89,16 +87,6 @@ def train(FLAGS, w2v = None):
             grads_and_vars = optimizer.compute_gradients(cnn.loss)
             train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
-            # Keep track of gradient values and sparsity (optional)
-            #grad_summaries = []
-            #for g, v in grads_and_vars:
-            #    if g is not None:
-            #        grad_hist_summary = tf.histogram_summary("{}/grad/hist".format(v.name), g)
-            #        sparsity_summary = tf.scalar_summary("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
-            #        grad_summaries.append(grad_hist_summary)
-            #        grad_summaries.append(sparsity_summary)
-            #grad_summaries_merged = tf.merge_summary(grad_summaries)
-
             # Output directory for models and summaries
             timestamp =  time.strftime('%Y-%m-%d-%H-%M-%S') #str(int(time.time()))
             out_dir = os.path.abspath(os.path.join(os.path.curdir, "runs", timestamp))
@@ -109,7 +97,6 @@ def train(FLAGS, w2v = None):
             acc_summary = tf.summary.scalar("accuracy", cnn.accuracy)
 
             # Train Summaries
-            #train_summary_op = tf.merge_summary([loss_summary, acc_summary, grad_summaries_merged])
             train_summary_op = tf.summary.merge([loss_summary, acc_summary])
             train_summary_dir = os.path.join(out_dir, "summaries", "train")
             train_summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
@@ -139,11 +126,11 @@ def train(FLAGS, w2v = None):
                 """
                 A single training step
                 """
-                feed_dict = {
+                feed_dict = { #put data in the CNN
                   cnn.input_x: x_batch,
                   cnn.input_y: y_batch,
                   cnn.dropout_keep_prob: FLAGS.dropout_keep_prob
-                }
+                } 
                 _, step, summaries, loss, accuracy = sess.run(
                     [train_op, global_step, train_summary_op, cnn.loss, cnn.accuracy],
                     feed_dict)
@@ -155,7 +142,7 @@ def train(FLAGS, w2v = None):
                 """
                 Evaluates model on a dev set
                 """
-                feed_dict = {
+                feed_dict = { #put data in the CNN
                   cnn.input_x: x_batch,
                   cnn.input_y: y_batch,
                   cnn.dropout_keep_prob: 1.0

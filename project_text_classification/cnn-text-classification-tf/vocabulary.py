@@ -7,23 +7,23 @@ class Vocabulary(object):
 	while maintaining an embeding matrix of the vector representation of 
 	each word/indices
 	Word representation are taken from a given Word2vec model.
-	if there's none given all vector will be gererated radomly (hot-vector scénario)
+	if there's none given all vector will be gererated radomly
 	"""
 
-	def __init__(self,maxlength, w2v=None,dim=300):
+	def __init__(self,maxlength, w2v=None,dim):
 		"""
 		Classic python initializer to construct the vocabulary object
 
 		IN :
 		maxlength :		the maximum length in terms of words of our sentences
 		w2v : 			pretrained word2vectors wrapper (Default : None)
-		dim : 			size of the vectors corresponding to each word (Default : 300 which is the size in w2v)
+		dim : 			size of the vectors corresponding to each word
 		"""
 		self.maxlength = maxlength
 		self.w2v = w2v
 		self.vocsize = 1
 		self.vocab = {}
-		self.embedding = [np.zeros(dim)]
+		self.embedding = [np.zeros(dim)] #if word unknown than id will be 0 and associate vector the numm vector
 		self.dim=dim
 
 
