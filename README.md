@@ -20,6 +20,16 @@ To run this code it is necessary to have installed on the computing machine the 
 
 Note that those files are considered by the programm to be put in ```../twitter-datasets/```
 
+### Basic run to obtain the kaggle submission
+To obtain the kaggle submission, the only file to be ran is ```run.py``` (Using a terminal enter the folder ```cnn-text-classification-tf``` and input ```python run.py```)
+
+### Using the neural network model 
+#### Training
+Also using a bash terminal inside the folder ```cnn-text-classification-tf``` call ```python train.py```. To ease up the set up of parameters we used Flags. Those can be listed using ```python train.py --help```
+
+#### Eval
+Now that the network has been trained it can predict on some new set using ```python eval.py --eval_train --checkpoint_dir="<path to run>```. Note that the trained network is checkpointed in the ```./runs/``` folder. Each run is backuped in a folder named after the time at which it was trained
+
 ### Architecture
 #### Helpers
 1. ```data_helpers.py``` : contains all the methods to load the data and do the preprocessing. It contains the following methods:
@@ -36,7 +46,8 @@ Note that those files are considered by the programm to be put in ```../twitter-
   * ```fit_transform````:  applies the two previous method and return the output of transform
   * ```embedding_matrix```: Getter for the embedding matrix (Transforms the embeding list into a np array)
   * extra utility functions
-  
+4. ```generate_w2v.py``` : used to generate our own word2vec using [gensim libary](https://radimrehurek.com/gensim/models/word2vec.html)
+ 
 #### Neural Network
 1. ```text_CNN.py``` : the convolutional neural network (ses an embedding layer, followed by a convolutional, max-pooling and softmax layer.)
 2. ```train.py``` : contains only one method used to train the neural network
