@@ -55,9 +55,13 @@ def train(FLAGS, w2v = None):
     y_shuffled = y[shuffle_indices]
 
     # Split train/test set
-    dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
-    x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
-    y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
+    if FLAGS.dev_sample_percentage != 0:
+        dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
+        x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
+        y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
+    else:
+        x_train, y_train = x_shuffled, y_shuffled
+        x_dev, y_dev = [],[]
     print("Vocabulary Size: {:d}".format(vocab_processor.vocsize))
     print("Train/Dev split: {:d}/{:d}".format(len(y_train), len(y_dev)))
 
@@ -165,7 +169,7 @@ def train(FLAGS, w2v = None):
                 x_batch, y_batch = zip(*batch)
                 train_step(x_batch, y_batch)
                 current_step = tf.train.global_step(sess, global_step)
-                if current_step % FLAGS.evaluate_every == 0:
+                if current_step % FLAGS.evaluate_every == 0 and FLAGS.dev_sample_percentage != 0:
                     print("\nEvaluation:")
                     last_loss,last_accuracy = dev_step(x_dev, y_dev, writer=dev_summary_writer)
                     print("")
