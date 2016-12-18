@@ -37,15 +37,17 @@ FLAGS._parse_flags()
 
 w2v = word2vec.Word2vec(FLAGS.w2v_path)
 num_filters=[64,128,200,300,400,500]
-filter_sizes=["2","3","4","5","2,3,4","3,4,5","4,5,6","2,3,4,5"]
+filter_sizes=["2,3,4","4,5,6","2,3,4,5","2","3","4","5","3,4,5"]
 
-f = open('GS.txt','w')
+
 for fs in filter_sizes:
 	FLAGS.filter_sizes = fs
 	_,loss,accuracy = train(FLAGS,w2v)
 	s = FLAGS.num_filters+" "+FLAGS.filter_sizes+" "+loss+" "+accuracy+"\n"
 	print(s) 
+	f = open('GS.txt','a')
 	f.write(s)
+	f.close()
 
 FLAGS.filter_sizes = "2,3,4"
 
@@ -54,6 +56,7 @@ for nf in num_filters:
 	_,loss,accuracy = train(FLAGS,w2v)
 	s = FLAGS.num_filters+" "+FLAGS.filter_sizes+" "+loss+" "+accuracy+"\n"
 	print(s) 
+	f = open('GS.txt','a')
 	f.write(s)
+	f.close()
 
-f.close()
