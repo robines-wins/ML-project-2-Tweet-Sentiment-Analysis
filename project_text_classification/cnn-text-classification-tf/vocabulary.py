@@ -10,7 +10,7 @@ class Vocabulary(object):
 	if there's none given all vector will be gererated radomly
 	"""
 
-	def __init__(self,maxlength, w2v=None,dim):
+	def __init__(self,maxlength, w2v=None,dim=128):
 		"""
 		Classic python initializer to construct the vocabulary object
 
