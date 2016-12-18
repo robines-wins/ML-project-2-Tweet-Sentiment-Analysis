@@ -56,3 +56,6 @@ Now that the network has been trained it can predict on some new set using ```py
 
 #### Ressearch Tools
 1. ```Baseline_model.ipynb``` : contains the code used to generate our baseline model (Logisitc regression using the same word representation than the neural network)
+
+### External contributions
+In addition to the previously cited library, the tensor flow implemention of the CNN and parts of the evaulation and training protocols come from https://github.com/dennybritz/cnn-text-classification-tf under license Apache
