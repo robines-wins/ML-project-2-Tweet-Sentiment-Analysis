@@ -21,6 +21,7 @@ To run this code it is necessary to have installed on the computing machine the 
 Note that those files are considered by the programm to be put in ```../twitter-datasets/```
 
 ### Architecture
+#### Helpers
 1. ```data_helpers.py``` : contains all the methods to load the data and do the preprocessing. It contains the following methods:
   * ```write```: Utility function used to be able to write some files to be able to check what some methods do (e.g. load_data_eval)
   *  ```delete_duplicate_lines``` : To delete the lines that are identical in the training data
@@ -35,7 +36,11 @@ Note that those files are considered by the programm to be put in ```../twitter-
   * ```fit_transform````:  applies the two previous method and return the output of transform
   * ```embedding_matrix```: Getter for the embedding matrix (Transforms the embeding list into a np array)
   * extra utility functions
-4. ```text_CNN.py``` : the convolutional neural network (ses an embedding layer, followed by a convolutional, max-pooling and softmax layer.)
-5. ```train.py``` : contains only one method used to train the neural network
-6. ```eval.py``` : contains only one method used to evaluate our train NN on a new input
-7. 
+  
+#### Neural Network
+1. ```text_CNN.py``` : the convolutional neural network (ses an embedding layer, followed by a convolutional, max-pooling and softmax layer.)
+2. ```train.py``` : contains only one method used to train the neural network
+3. ```eval.py``` : contains only one method used to evaluate our train NN on a new input
+
+#### Ressearch Tools
+1. ```Baseline_model.ipynb``` : contains the code used to generate our baseline model (Logisitc regression using the same word representation than the neural network)
