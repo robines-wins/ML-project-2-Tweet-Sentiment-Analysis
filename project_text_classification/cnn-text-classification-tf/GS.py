@@ -22,8 +22,8 @@ tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularizaion lambda (default: 0
 # Training parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
 tf.flags.DEFINE_integer("num_epochs", 1, "Number of training epochs (default: 200)")
-tf.flags.DEFINE_integer("evaluate_every", 200, "Evaluate model on dev set after this many steps (default: 100)")
-tf.flags.DEFINE_integer("checkpoint_every", 500, "Save model after this many steps (default: 100)")
+tf.flags.DEFINE_integer("evaluate_every", 2545, "Evaluate model on dev set after this many steps (default: 100)")
+tf.flags.DEFINE_integer("checkpoint_every", 2500, "Save model after this many steps (default: 100)")
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
 
 # Misc Parameters
@@ -37,8 +37,8 @@ FLAGS._parse_flags()
 
 w2v = word2vec.Word2vec(FLAGS.w2v_path)
 num_filters=[64,128,200,300,400,500]
-filter_sizes=["2,3,4","4,5,6","2,3,4,5","2","3","4","5","3,4,5"]
-
+filter_sizes=["2","3","4","5","6","2,3,4","3,4,5","4,5,6","2,3,4,5","3,4,5,6"]
+filter_sizes=[]
 
 for fs in filter_sizes:
 	FLAGS.filter_sizes = fs
@@ -49,7 +49,9 @@ for fs in filter_sizes:
 	f.write(s)
 	f.close()
 
-FLAGS.filter_sizes = "2,3,4"
+break
+
+FLAGS.filter_sizes = "3,4,5"
 
 for nf in num_filters:
 	FLAGS.num_filters = nf
