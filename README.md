@@ -13,8 +13,9 @@ of 2'270'482 distinct tweets. It used a convolutional neural network implemented
 ### Requirements
 To run this code it is necessary to have installed on the computing machine the following:
 - Python 3
-- Tensorflow > 0.8
-- Numpy
+- Tensorflow > 0.8 (avaible through pip)
+- Numpy (avaible through pip)
+- gensim (avaible through pip)
 - (optional) GPU support for tensorflow using CUDA 8.0 and CUDNN 5.1
 - download the training and testing sets from [the original kaggle competition](https://inclass.kaggle.com/c/epfml-text)
 
