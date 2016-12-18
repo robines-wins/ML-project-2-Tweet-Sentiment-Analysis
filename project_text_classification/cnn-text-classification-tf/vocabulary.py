@@ -3,6 +3,12 @@ import numpy as np
 import pickle
 
 class Vocabulary(object):
+	"""a vocabulary class used to transform string into list of indices
+	while maintaining an embeding matrix of the vector representation of 
+	each word/indices
+	Word representation are taken from a given Word2vec model.
+	if there's none given all vector will be gererated radomly (hot-vector scénario)
+	"""
 
 	def __init__(self,maxlength, w2v=None,dim=300):
 		"""
@@ -10,7 +16,7 @@ class Vocabulary(object):
 
 		IN :
 		maxlength :		the maximum length in terms of words of our sentences
-		w2v : 			pretrained word2vectors dictionary (Default : None)
+		w2v : 			pretrained word2vectors wrapper (Default : None)
 		dim : 			size of the vectors corresponding to each word (Default : 300 which is the size in w2v)
 		"""
 		self.maxlength = maxlength

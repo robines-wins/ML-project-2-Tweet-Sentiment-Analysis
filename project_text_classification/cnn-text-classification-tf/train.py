@@ -19,10 +19,6 @@ def train(FLAGS, w2v = None):
 
     OUT : 
     checkpoint_dir :        the directory where the checkpoints are stored
-    last_test_loss :        the last test loss that was computed (used to cross validate hyper-parameters)
-    last_test_accuracy :    the last test accuracy 
-    last_train_loss :       the last train loss
-    last_train_accuracy :   the last train accuracy
     """
     print("\nParameters:")
     paraml = []
@@ -43,9 +39,8 @@ def train(FLAGS, w2v = None):
     # Build vocabulary
     max_document_length = max([len(x.split(" ")) for x in x_text])
     vocab_processor = vocabulary.Vocabulary(max_document_length,w2v,FLAGS.embedding_dim)
-    vocab_processor.fit(eval_text)
+    vocab_processor.fit(eval_text) #make sure all word of eval set are in the embedign matrix
     x = np.array(vocab_processor.fit_transform(x_text))
-    #data_helpers.write(x,"x2_vec.txt")
 
 
     # Randomly shuffle data
@@ -54,7 +49,6 @@ def train(FLAGS, w2v = None):
     y_shuffled = y[shuffle_indices]
 
     # Split train/test set
-    # TODO: This is very crude, should use cross-validation
     dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
     x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
     y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
@@ -87,16 +81,6 @@ def train(FLAGS, w2v = None):
             grads_and_vars = optimizer.compute_gradients(cnn.loss)
             train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
-            # Keep track of gradient values and sparsity (optional)
-            #grad_summaries = []
-            #for g, v in grads_and_vars:
-            #    if g is not None:
-            #        grad_hist_summary = tf.histogram_summary("{}/grad/hist".format(v.name), g)
-            #        sparsity_summary = tf.scalar_summary("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
-            #        grad_summaries.append(grad_hist_summary)
-            #        grad_summaries.append(sparsity_summary)
-            #grad_summaries_merged = tf.merge_summary(grad_summaries)
-
             # Output directory for models and summaries
             timestamp =  time.strftime('%Y-%m-%d-%H-%M-%S') #str(int(time.time()))
             out_dir = os.path.abspath(os.path.join(os.path.curdir, "runs", timestamp))
@@ -107,7 +91,6 @@ def train(FLAGS, w2v = None):
             acc_summary = tf.summary.scalar("accuracy", cnn.accuracy)
 
             # Train Summaries
-            #train_summary_op = tf.merge_summary([loss_summary, acc_summary, grad_summaries_merged])
             train_summary_op = tf.summary.merge([loss_summary, acc_summary])
             train_summary_dir = os.path.join(out_dir, "summaries", "train")
             train_summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
@@ -127,7 +110,7 @@ def train(FLAGS, w2v = None):
             # Write vocabulary
             vocab_processor.save(os.path.join(out_dir, "vocab"))
 
-            #write list of flags
+            #save the list of flags
             data_helpers.write(paraml,"train_flags.txt",str(out_dir))
 
             # Initialize all variables
@@ -169,7 +152,7 @@ def train(FLAGS, w2v = None):
             # Generate batches
             batches = data_helpers.batch_iter(
                 list(zip(x_train, y_train)), FLAGS.batch_size, FLAGS.num_epochs)
-            # Training loop. For each batch...
+            # Training loop.
             for batch in batches:
                 x_batch, y_batch = zip(*batch)
                 train_step(x_batch, y_batch)
@@ -192,9 +175,10 @@ if __name__ == "__main__":
     tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos.txt", "Data source for the positive data.")
     tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the positive data.")
     tf.flags.DEFINE_string("eval_data_file", "../twitter-datasets/test_data.txt", "Data source for the evaluation.")
+    tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to precomputed word2vec vector")
 
     # Model Hyperparameters
-    tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
+    tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)") #must match the w2v model if used
     tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
     tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
     tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
@@ -205,7 +189,6 @@ if __name__ == "__main__":
     tf.flags.DEFINE_integer("num_epochs", 1, "Number of training epochs (default: 200)")
     tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
     tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
-    tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to precomputed word2vec vector")
 
     # Misc Parameters
     tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -214,6 +197,5 @@ if __name__ == "__main__":
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
 
-    w2v = word2vec.Word2vec(FLAGS.w2v_path)
-    #w2v = word2vec.Word2vec()
+    w2v = word2vec.Word2vec(FLAGS.w2v_path) if FLAGS.w2v_path != "" else None #load the word2vec database, if path is empty use hot vector
     train(FLAGS,w2v)

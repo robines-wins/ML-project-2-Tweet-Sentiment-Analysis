@@ -17,7 +17,7 @@ def eval(FLAGS, w2v = None):
 
     IN : 
     FLAGS :     the different parameters of the training (see below for further details)
-    w2v :       the word2vec that are pretrained (Default : None)
+    w2v :       the word2vec that are pretrained (Default : None, hot vector case)
     """
     print("\nParameters:")
     for attr, value in sorted(FLAGS.__flags.items()):
@@ -99,6 +99,8 @@ if __name__ == '__main__':
     tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos.txt", "Data source for the positive data.")
     tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the negative data.")
     tf.flags.DEFINE_string("eval_data_file", "../twitter-datasets/test_data.txt", "Data source for the evaluation.")
+    tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to precomputed word2vec vector")
+
 
     # Eval Parameters
     tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
@@ -110,8 +112,8 @@ if __name__ == '__main__':
     tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
 
 
+
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
-    #w2v = word2vec.Word2vec()
-    #eval(FLAGS,w2v)
-    eval(FLAGS)
+    w2v = word2vec.Word2vec(FLAGS.w2v_path) if FLAGS.w2v_path != "" else None #load the word2vec database, if path is empty use hot vector
+    eval(FLAGS,w2v)

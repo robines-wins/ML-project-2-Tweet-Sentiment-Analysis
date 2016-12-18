@@ -91,10 +91,6 @@ def load_data_eval(eval_data_file):
     eval_example = [s.split(',',1) for s in eval_example]
     x_id, x_text = zip(*eval_example)
 
-    # (optionnal) write list on file for check
-    #write(x_id,"x_id.txt")
-    #write(x_text,"x_text.txt")
-
     # Split by words
     return x_id, x_text
 
