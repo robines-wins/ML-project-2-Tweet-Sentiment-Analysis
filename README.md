@@ -1,21 +1,21 @@
 # Tweet Sentiment Analysis using a convolutional neural network
-Project realised in December 2016, for the class of Machine Learning, Master in Communication Systems at EPFL. 
+Project realised in December 2016, for the class of Machine Learning (taught by M.Jaggi and R.Urbanke) during our Master in Communication Systems at EPFL. 
 By :
-- Hugo Moreau 
-- Robin Solignac
-- Axel Vandebrouck
+- H. Moreau 
+- R. Solignac
+- A. Vandebrouck
 
 ## Aim of the project
 This project aimed to do a binary classification on the sentiment expressed in 10'000 tweets using a training set 
-of 2'270'482 distinct tweets. It used a convolutional neural network implemented using tensor flow (under Apache License).
+of 2'270'482 distinct tweets. It used a convolutional neural network implemented using tensor flow (under Apache License) on top of word reprensentation using word2vec provided by gensim library. It achieved a fairly good accuracy of approximately 86%.
 
 ## Implementation
 ### Requirements
 To run this code it is necessary to have installed on the computing machine the following:
 - Python 3
-- Tensorflow > 0.8 (avaible through pip)
-- Numpy (avaible through pip)
-- gensim (avaible through pip)
+- Tensorflow > 0.8 (avaible ```$ pip install tensorflow```)
+- Numpy (avaible ```$ pip install numpy```)
+- gensim (avaible ```$ pip install gensim```)
 - (optional) GPU support for tensorflow using CUDA 8.0 and CUDNN 5.1
 - download the training and testing sets from [the original kaggle competition](https://inclass.kaggle.com/c/epfml-text)
 
