@@ -1,4 +1,5 @@
 import gensim
+import sys
 
 class Sentences(object):
 	"""an memeory friendly iterable object who iterate over all words in its list of text files"""
@@ -10,8 +11,17 @@ class Sentences(object):
  
 	def __iter__(self):
 		for fname in self.filel: #for each file
+			progress = []
+			count = 0
 			for line in open(fname,'r'): #for each line
+				count += 1
+				if(count % 100000 == 0):
+					progress.append(".")
+					toPrint = ''.join(progress)
+					sys.stdout.write(toPrint)
+					sys.stdout.flush()
 				yield line.split() #yield each word
+			sys.stdout.write('\n')
 
 def generate_word2vec(filelist,outputfile,dim = 128):
 	"""
@@ -22,10 +32,12 @@ def generate_word2vec(filelist,outputfile,dim = 128):
 	dim: dimension of the vectors in the generates model 
 
 	"""
+	print("Generating word2vec files (This might take a while) ...")
 	sentences = Sentences(filelist)
 	model = gensim.models.Word2Vec(sentences,workers=4,size=dim)
 	model.init_sims(replace=True)
 	model.save(outputfile)
+	print("Done ! ")
 
 if __name__ == "__main__": #if call as script will generate a model from all our dataset
 	filelist=['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_neg_full.txt','../twitter-datasets/test_data.txt']
