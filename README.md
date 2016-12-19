@@ -6,8 +6,10 @@ By :
 - A. Vandebrouck
 
 ## Aim of the project
-This project aimed to do a binary classification on the sentiment expressed in 10'000 tweets using a training set 
-of 2'270'482 distinct tweets. It used a convolutional neural network implemented using tensor flow (under Apache License) on top of word reprensentation using word2vec provided by gensim library. It achieved a fairly good accuracy of approximately 86%.
+With the rapid growth of online data, text classification has become one of the key technique to analyse data automatically. We could think as an example on doing online polling for future election by extracting the sentiment of tweets concerning a candidate, or getting feedback from customer upon the release/presentation of a new product. This classifications are to be realised on larger and larger sets of data, and are therefore in the heart of research for more efficient models. 
+This project aims to do text classification at a sentence level. More specifically to analyse the sentiments enclosed in tweets (binary classification : positive or negative). To do so, a large data set of 2 270 482 distinct tweets is used as a training set (due to computation time, a smaller subset of 181 321 distinct tweets is also considered). The final goal being to predict on 10 000 tweets.
+Text classification usually relies on features developed by humans, one of the strength of this model relies in the lack of need for any human developed features.
+Although this project uses a clean data set where sentences have already been tokenized/cleaned and a few modifications would be necessary to apply it to a different set of data.
 
 ## Implementation
 ### Requirements
