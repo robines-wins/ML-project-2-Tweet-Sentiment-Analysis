@@ -176,6 +176,8 @@ def train(FLAGS, w2v = None):
                 if current_step % FLAGS.checkpoint_every == 0:
                     path = saver.save(sess, checkpoint_prefix, global_step=current_step)
                     print("Saved model checkpoint to {}\n".format(path))
+            path = saver.save(sess, checkpoint_prefix)
+            print("Saved model checkpoint to {}\n".format(path))
     return checkpoint_dir,last_loss,last_accuracy
 
 

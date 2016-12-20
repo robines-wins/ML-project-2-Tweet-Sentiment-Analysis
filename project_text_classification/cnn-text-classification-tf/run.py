@@ -1,14 +1,11 @@
-from train import train
 from eval import eval
-import generate_w2v
-import word2vec
 import tensorflow as tf
+import zipfile
 
 #external files parameter
 tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos_full.txt", "Data source for the positive data.")
 tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg_full.txt", "Data source for the positive data.")
-tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to where word2vec comouted file will be stored ")
-tf.flags.DEFINE_string("checkpoint_dir", "", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("checkpoint_dir", "./runs/2016-12-18-22-08-04/checkpoints", "Checkpoint directory from training run")
 tf.flags.DEFINE_string("eval_data_file", "../twitter-datasets/test_data.txt", "Data source for the evaluation.")
 
 # Model Hyperparameters
@@ -34,12 +31,10 @@ tf.flags.DEFINE_boolean("eval_train", False, "Evaluate on all training data")
 FLAGS = tf.flags.FLAGS
 FLAGS._parse_flags()
 
-#generate word2vec model
-w2vfilelist =['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_neg_full.txt','../twitter-datasets/test_data.txt']
-generate_w2v.generate_word2vec(w2vfilelist,FLAGS.w2v_path,FLAGS.embedding_dim)
-#wrap word2vec model
-w2v = word2vec.Word2vec(FLAGS.w2v_path)
-#train our CNN and get back the directory of it
-FLAGS.checkpoint_dir,_,_ = train(FLAGS,w2v)
-#eval our evalution set using our model
-eval(FLAGS,w2v)
+print("\nunzip trained model\n")
+with zipfile.ZipFile("runs.zip","r") as zipf:
+	zipf.extractall("")
+print("\nDone !\n")
+
+#eval our evalution set using our model, we only need our vocabulary object, not anymore the word2vec database
+eval(FLAGS)
