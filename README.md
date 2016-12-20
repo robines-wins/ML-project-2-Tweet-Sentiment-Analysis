@@ -27,6 +27,8 @@ Note that those files are considered by the programm to be put in ```../twitter-
 To obtain the kaggle submission, the only file to be ran is ```run.py``` (Using a terminal enter the folder ```cnn-text-classification-tf``` and input ```python run.py```)
 
 ### Using the neural network model 
+Note that right now the network is configured to run with a w2v, one should set the FLAGS properly to use the model without a w2v.
+
 #### Training
 Also using a bash terminal inside the folder ```cnn-text-classification-tf``` call ```python train.py```. To ease up the set up of parameters we used Flags. Those can be listed using ```python train.py --help```
 
