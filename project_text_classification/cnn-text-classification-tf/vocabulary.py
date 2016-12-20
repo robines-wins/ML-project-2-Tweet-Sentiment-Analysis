@@ -3,11 +3,12 @@ import numpy as np
 import pickle
 
 class Vocabulary(object):
-	"""a vocabulary class used to transform string into list of indices
-	while maintaining an embeding matrix of the vector representation of 
+	"""
+	A vocabulary class used to transform strings into lists of indices
+	while maintaining an embedding matrix of the vector representation of 
 	each word/indices
 	Word representation are taken from a given Word2vec model.
-	if there's none given all vector will be gererated radomly
+	if no such model is provided all vector will be gererated randomly
 	"""
 
 	def __init__(self,maxlength, w2v=None,dim=128):

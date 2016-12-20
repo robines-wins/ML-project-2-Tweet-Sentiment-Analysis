@@ -2,7 +2,7 @@ import gensim
 
 class Word2vec(object):
 	"""
-	gensim word2vec model wrapper. load the data and allow quary into it
+	Gensim word2vec model wrapper. load the data and allow us to query it.
 	"""
 
 	def __init__(self, path_='../tweetdatabase_word2vec'):
@@ -15,16 +15,16 @@ class Word2vec(object):
 		print("\nloading done !")
 
 	def isin(self, word):
-		"""check existence of a word in the database"""
+		"""checks the existence of a word in the database"""
 		return (word in self.model.vocab)
 
 	def get(self, word): 
-		"""return the vector representation of a given word if exist in the model"""
+		"""Returns the vector representation of a given word if exist in the model"""
 		if self.isin(word):
 			return self.model[word]
 
 
-if __name__ == '__main__': #If launch as script, setup a quary tool on model at path
+if __name__ == '__main__': #If launched as a script, setup a quary tool on model at path
 	w2v = Word2vec()
 	while True:
 		input_ = input("=>")

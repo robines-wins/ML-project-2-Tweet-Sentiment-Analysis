@@ -13,19 +13,17 @@ import csv
 
 def eval(FLAGS, w2v = None):
     """
-    Method to evaluate our model on a new model
+    Method to evaluate our model on a new input
 
     IN : 
     FLAGS :     the different parameters of the training (see below for further details)
-    w2v :       the word2vec that are pretrained (Default : None, hot vector case)
+    w2v :       the word2vec that are pretrained (Default : None, random vector case)
     """
     print("\nParameters:")
     for attr, value in sorted(FLAGS.__flags.items()):
         print("{}={}".format(attr.upper(), value))
     print("")
 
-    # CHANGE THIS: Load data. Load your own data here
-    # DONE
     if FLAGS.eval_train:
         x_raw, y_test = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.negative_data_file)
         y_test = np.argmax(y_test, axis=1)
@@ -96,10 +94,10 @@ if __name__ == '__main__':
     # ==================================================
 
     # Data Parameters
-    tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos.txt", "Data source for the positive data.")
-    tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the negative data.")
+    tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos.txt", "Data source for the positive data (training).")
+    tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the negative data (training).")
     tf.flags.DEFINE_string("eval_data_file", "../twitter-datasets/test_data.txt", "Data source for the evaluation.")
-    tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to precomputed word2vec vector")
+    tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to the precomputed word2vec vector")
 
 
     # Eval Parameters
@@ -110,8 +108,6 @@ if __name__ == '__main__':
     # Misc Parameters
     tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
     tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
-
-
 
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()

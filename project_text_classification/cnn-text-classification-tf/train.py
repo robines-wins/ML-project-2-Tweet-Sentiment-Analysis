@@ -21,10 +21,8 @@ def train(FLAGS, w2v = None):
 
     OUT : 
     checkpoint_dir :        the directory where the checkpoints are stored
-    last_test_loss :        the last test loss that was computed (used to cross validate hyper-parameters)
-    last_test_accuracy :    the last test accuracy 
-    last_train_loss :       the last train loss
-    last_train_accuracy :   the last train accuracy
+    last_loss :             the last test loss that was computed 
+    last_accuracy :         the last test accuracy 
     """
     print("\nParameters:")
     paraml = []
@@ -193,15 +191,15 @@ if __name__ == "__main__":
     # Model Hyperparameters
     tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
     tf.flags.DEFINE_string("filter_sizes", "3", "Comma-separated filter sizes (default: '3,4,5')")
-    tf.flags.DEFINE_integer("num_filters", 64, "Number of filters per filter size (default: 128)")
+    tf.flags.DEFINE_integer("num_filters", 64, "Number of filters per filter size (default: 64)")
     tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
     tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularizaion lambda (default: 0.0)")
 
     # Training parameters
     tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-    tf.flags.DEFINE_integer("num_epochs", 1, "Number of training epochs (default: 200)")
-    tf.flags.DEFINE_integer("evaluate_every", 2500, "Evaluate model on dev set after this many steps (default: 100)")
-    tf.flags.DEFINE_integer("checkpoint_every", 2500, "Save model after this many steps (default: 100)")
+    tf.flags.DEFINE_integer("num_epochs", 1, "Number of training epochs (default: 1)")
+    tf.flags.DEFINE_integer("evaluate_every", 200, "Evaluate model on dev set after this many steps (default: 200)")
+    tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
     tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to precomputed word2vec vector")
 
     # Misc Parameters
@@ -212,5 +210,4 @@ if __name__ == "__main__":
     FLAGS._parse_flags()
 
     w2v = word2vec.Word2vec(FLAGS.w2v_path)
-    #w2v = word2vec.Word2vec()
     train(FLAGS,w2v)

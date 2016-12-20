@@ -2,10 +2,14 @@ import gensim
 import sys
 
 class Sentences(object):
-	"""an memeory friendly iterable object who iterate over all words in its list of text files"""
+	"""A memeory friendly iterable object which iterates over all words in its list of text files"""
+
 	def __init__(self, filel):
-		"""IN:
-		filel: list of path to all text file to iterate on
+		"""
+		Classical python initializer
+
+		IN:
+		filel: 	list of path to all text file to iterate on
 		"""
 		self.filel = filel
  
@@ -25,11 +29,12 @@ class Sentences(object):
 
 def generate_word2vec(filelist,outputfile,dim = 128):
 	"""
-	generate a gensim word2vec model form words in serval text files
+	Generates a gensim word2vec model form words in several text files
+	
 	IN : 
-	filelist: List of path to all file used to generate the model
-	outputefile: path to the file where the model will be saved for later use
-	dim: dimension of the vectors in the generates model 
+	filelist: 		List of path to all file used to generate the model
+	outputefile: 	path to the file where the model will be saved for later use
+	dim: 			dimension of the vectors in the generated model (to be chosen, else will be set to 128 by default) 
 
 	"""
 	print("Generating word2vec files (This might take a while) ...")
@@ -39,7 +44,7 @@ def generate_word2vec(filelist,outputfile,dim = 128):
 	model.save(outputfile)
 	print("Done ! ")
 
-if __name__ == "__main__": #if call as script will generate a model from all our dataset
+if __name__ == "__main__": #if called as a script, will generate a model from all our dataset
 	filelist=['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_neg_full.txt','../twitter-datasets/test_data.txt']
 	outputfile = '../tweetdatabase_word2vec'
 	generate_word2vec(filelist,outputfile)
