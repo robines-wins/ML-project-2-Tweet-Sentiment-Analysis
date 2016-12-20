@@ -3,8 +3,6 @@ import tensorflow as tf
 import zipfile
 
 #external files parameter
-tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos_full.txt", "Data source for the positive data.")
-tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg_full.txt", "Data source for the positive data.")
 tf.flags.DEFINE_string("checkpoint_dir", "./runs/2016-12-18-22-08-04/checkpoints", "Checkpoint directory from training run")
 tf.flags.DEFINE_string("eval_data_file", "../twitter-datasets/test_data.txt", "Data source for the evaluation.")
 
