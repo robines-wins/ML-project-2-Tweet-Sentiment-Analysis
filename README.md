@@ -7,8 +7,10 @@ By :
 
 ## Aim of the project
 With the rapid growth of online data, text classification has become one of the key technique to analyse data automatically. We could think as an example on doing online polling for future election by extracting the sentiment of tweets concerning a candidate, or getting feedback from customer upon the release/presentation of a new product. This classifications are to be realised on larger and larger sets of data, and are therefore in the heart of research for more efficient models. 
-This project aims to do text classification at a sentence level. More specifically to analyse the sentiments enclosed in tweets (binary classification : positive or negative). To do so, a large data set of 2 270 482 distinct tweets is used as a training set (due to computation time, a smaller subset of 181 321 distinct tweets is also considered). The final goal being to predict on 10 000 tweets.
+**This project aims to do text classification at a sentence level. More specifically to analyse the sentiments enclosed in tweets (binary classification : positive or negative)**. To do so, a large data set of 2 270 482 distinct tweets is used as a training set (due to computation time, a smaller subset of 181 321 distinct tweets is also considered). The final goal being to predict on 10 000 tweets.
+
 Text classification usually relies on features developed by humans, one of the strength of this model relies in the lack of need for any human developed features.
+
 Although this project uses a clean data set where sentences have already been tokenized/cleaned and a few modifications would be necessary to apply it to a different set of data.
 
 ## Implementation
@@ -33,7 +35,7 @@ Note that right now the network is configured to run with a w2v, one should set 
 Also using a bash terminal inside the folder ```cnn-text-classification-tf``` call ```python train.py```. To ease up the set up of parameters we used Flags. Those can be listed using ```python train.py --help```
 
 #### Eval
-Now that the network has been trained it can predict on some new set using ```python eval.py --eval_train --checkpoint_dir="<path to run>```. Note that the trained network is checkpointed in the ```./runs/``` folder. Each run is backuped in a folder named after the time at which it was trained
+Now that the network has been trained it can predict on some new set using ```python eval.py --eval_train --checkpoint_dir="<path to run>"``` (where ```<path-to-run>``` should reflect the path to dir where the trained model has been checkpointed, it will then choose the latest run as trained model). Note that the trained network is checkpointed in the ```./runs/``` folder. Each run is backuped in a folder named after the time at which it was trained
 
 ### Architecture
 #### Helpers
@@ -59,7 +61,7 @@ Now that the network has been trained it can predict on some new set using ```py
 3. ```eval.py``` : contains only one method used to evaluate our train NN on a new input
 
 #### Ressearch Tools
-1. ```Baseline_model.ipynb``` : contains the code used to generate our baseline model (Logisitc regression using the same word representation than the neural network)
+1. ```Baseline_model.ipynb``` : contains a notebook used to generate our baseline model (Logisitc regression using the same word representation than the neural network)
 
 ### External contributions
 In addition to the previously cited library, the tensor flow implemention of the CNN and parts of the evaulation and training protocols come from https://github.com/dennybritz/cnn-text-classification-tf under license Apache
