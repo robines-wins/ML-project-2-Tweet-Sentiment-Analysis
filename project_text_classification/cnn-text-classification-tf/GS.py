@@ -56,7 +56,6 @@ for fs in filter_sizes:
 FLAGS.filter_sizes = "2,3,4,5"
 num_filters=[]
 
-
 for nf in num_filters:
 	FLAGS.num_filters = nf
 	_,loss,accuracy = train(FLAGS,w2v)
