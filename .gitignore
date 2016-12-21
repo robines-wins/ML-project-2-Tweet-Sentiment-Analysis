@@ -3,3 +3,5 @@ twitter-datasets.zip
 GoogleNews-vectors-negative300.bin
 GoogleNews-vectors-negative300.bin.gz
 project_text_classification/runs
+train_neg_full.txt
+train_pos_full.txt
