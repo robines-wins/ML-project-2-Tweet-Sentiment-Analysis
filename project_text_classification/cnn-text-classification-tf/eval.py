@@ -97,7 +97,7 @@ if __name__ == '__main__':
     tf.flags.DEFINE_string("positive_data_file", "../twitter-datasets/train_pos.txt", "Data source for the positive data (training).")
     tf.flags.DEFINE_string("negative_data_file", "../twitter-datasets/train_neg.txt", "Data source for the negative data (training).")
     tf.flags.DEFINE_string("eval_data_file", "../twitter-datasets/test_data.txt", "Data source for the evaluation.")
-    tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to the precomputed word2vec vector")
+    tf.flags.DEFINE_string("w2v_path", "", "path to the precomputed word2vec vector (Default: None)")
 
 
     # Eval Parameters

@@ -200,7 +200,7 @@ if __name__ == "__main__":
     tf.flags.DEFINE_integer("num_epochs", 1, "Number of training epochs (default: 1)")
     tf.flags.DEFINE_integer("evaluate_every", 200, "Evaluate model on dev set after this many steps (default: 200)")
     tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
-    tf.flags.DEFINE_string("w2v_path", "../tweetdatabase_word2vec", "path to precomputed word2vec vector")
+    tf.flags.DEFINE_string("w2v_path", "", "path to precomputed word2vec vector (default: None is used)")
 
     # Misc Parameters
     tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
