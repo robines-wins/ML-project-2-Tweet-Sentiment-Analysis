@@ -42,7 +42,7 @@ To generate a w2v, one should modify in the ```generate_w2v.py``` the path (abso
 ```
 filelist=['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_neg_full.txt','../twitter-datasets/test_data.txt']
 ```
-
+Then, the w2v_path should be set to ```'../tweetdatabase_word2vec'``` in both the ```train.py``` and ```eval.py```. One should be careful to be coherent between the word representation in the train and eval steps that should be the same, otherwise the result will be completely random (the neural net being trained on a word representation and evaluated using another word representation for the new input)
 
 ### Architecture
 #### Helpers
