@@ -26,7 +26,7 @@ To run this code it is necessary to have installed on the computing machine the 
 Note that those files are considered by the programm to be put in ```../twitter-datasets/```
 
 ### Basic run to obtain the kaggle submission
-To obtain the kaggle submission, the only file to be ran is ```run.py``` (Using a terminal enter the folder ```cnn-text-classification-tf``` and input ```python run.py```). To be able to run the model, we provide the zip of the file ([link to run.zip]()**Insert link**). This run.zip must be put in the folder ```cnn-text-classification-tf/``` and left compressed.
+To obtain the kaggle submission, the only file to be ran is ```run.py``` (Using a terminal enter the folder ```cnn-text-classification-tf``` and input ```python run.py```). To be able to run the model, we provide the zip of the file ([link to run.zip]() **Insert link** ). This run.zip must be put in the folder ```cnn-text-classification-tf/``` and left compressed.
 
 ### Using the neural network model 
 Note that right now the network is configured to run with a w2v, one should set the FLAGS properly to use the model without a w2v.
@@ -36,6 +36,13 @@ Also using a bash terminal inside the folder ```cnn-text-classification-tf``` ca
 
 #### Eval
 Now that the network has been trained it can predict on some new set using ```python eval.py --eval_train --checkpoint_dir="<path to run>"``` (where ```<path-to-run>``` should reflect the path to dir where the trained model has been checkpointed, it will then choose the latest run as trained model). Note that the trained network is checkpointed in the ```./runs/``` folder. Each run is backuped in a folder named after the time at which it was trained
+
+#### Using the w2v model builder
+To generate a w2v, one should modify in the ```generate_w2v.py``` the path (absolute or relative) to the training and testing set by modifying 
+```
+filelist=['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_neg_full.txt','../twitter-datasets/test_data.txt']
+```
+
 
 ### Architecture
 #### Helpers
