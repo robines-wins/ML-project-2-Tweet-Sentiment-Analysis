@@ -209,5 +209,5 @@ if __name__ == "__main__":
     FLAGS = tf.flags.FLAGS
     FLAGS._parse_flags()
 
-    w2v = word2vec.Word2vec(FLAGS.w2v_path)
+    w2v = word2vec.Word2vec(FLAGS.w2v_path) if FLAGS.w2v_path != "" else None
     train(FLAGS,w2v)
