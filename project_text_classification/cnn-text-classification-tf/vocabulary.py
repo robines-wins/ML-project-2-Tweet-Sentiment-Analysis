@@ -39,7 +39,6 @@ class Vocabulary(object):
 		2. if no pretrained vector set was passed then all words will be assigned to a randomly distributed vector.
 
 		IN : 
-		self :		the vocabulary object
 		strlist:	the list of of senetences for which we want to build a vocabulary
 		"""
 
@@ -61,7 +60,6 @@ class Vocabulary(object):
 		of the given word (obtained from the vocabulary.
 
 		IN : 
-		self :		the vocabulary object
 		strlist:	the list of of senetences for which we want to build a vocabulary
 
 		OUT:
@@ -84,7 +82,6 @@ class Vocabulary(object):
 		Will first build the vocabulary and then return the list of vectors corresponding to each sentences
 
 		IN : 
-		self :		the vocabulary object
 		strlist:	the list of of senetences for which we want to build a vocabulary
 
 		OUT:
@@ -97,9 +94,6 @@ class Vocabulary(object):
 	def embeddingMatrix(self):
 		"""
 		Transforms the embeding list into a np array
-
-		IN : 
-		self :		the vocabulary object
 
 		OUT:
 		The embeding matrix
@@ -125,9 +119,8 @@ class Vocabulary(object):
 		Utility method allowing use to restore the vocabulary to reuse it on new inputs for the same model
 
 		IN:
-		cls:		the class itself (see definition of a classmethod)
 		filename:	the name of the file from which we wish to restore our vocabulary
-		w2v:		pretrained word2vectors dictionary (Default : None)
+		w2v:		pretrained word2vectors model (Default : None)
 		"""
 		f = open(filename,'rb')
 		voc = pickle.load(f)

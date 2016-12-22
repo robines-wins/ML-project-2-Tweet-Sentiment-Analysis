@@ -40,7 +40,7 @@ def generate_word2vec(filelist,outputfile,dim = 128):
 	print("Generating word2vec files (This might take a while) ...")
 	sentences = Sentences(filelist)
 	model = gensim.models.Word2Vec(sentences,workers=4,size=dim)
-	model.init_sims(replace=True)
+	model.init_sims(replace=True) #pass the model in read-only, use fewer memory
 	model.save(outputfile)
 	print("Done ! ")
 

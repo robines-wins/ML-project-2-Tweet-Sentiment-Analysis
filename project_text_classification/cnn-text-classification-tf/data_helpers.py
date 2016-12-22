@@ -20,7 +20,7 @@ def write(list_,name,path='.'):
 
 def delete_duplicate_lines(x_raw):
     """
-    To delete the lines that are identical in the training data
+    Delete the lines that are identical in the training data
     
     IN : 
     x_raw :  clean data (list of clean sentences)
@@ -77,8 +77,6 @@ def load_data_eval(eval_data_file):
 
     IN : 
     eval_data_file :        path to the data on which we wish to run our evaluation
-    negative_data_file :    path to the negative data file
-    check_write :           option to be able to write the output to a file to check the function well-behavior
 
     OUT : 
     split sentences along with their ids from the evaluation data
