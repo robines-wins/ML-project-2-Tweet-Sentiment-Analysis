@@ -23,16 +23,17 @@ To run this code it is necessary to have installed on the computing machine the 
 - (optional) GPU support for tensorflow using CUDA 8.0 and CUDNN 5.1
 - download the training and testing sets from [the original kaggle competition](https://inclass.kaggle.com/c/epfml-text)
 
-Note that those files are considered by the programm to be put in ```../twitter-datasets/```
+Note that those files are considered by the programm to be put in ```.
+./twitter-datasets/```
 
 ### Basic run to obtain the kaggle submission
-To obtain the kaggle submission, the only file to be ran is ```run.py``` (Using a terminal enter the folder ```cnn-text-classification-tf``` and input ```python run.py```). To be able to run the model, **we provide the zip of the file ([link to run.zip](https://www.dropbox.com/s/8p1rm0wwpfpckpm/runs.zip?dl=0))**. This run.zip must be put in the folder ```cnn-text-classification-tf/``` and left compressed.
+To obtain the kaggle submission, the only file to be ran is ```run.py``` (Using a terminal enter the folder ```scripts``` and input ```python run.py```). To be able to run the model, **we provide the zip of the file ([link to run.zip](https://www.dropbox.com/s/8p1rm0wwpfpckpm/runs.zip?dl=0))**. This run.zip must be put in the folder ```scripts/``` and left compressed.
 
 ### Using the neural network model 
 Note that right now the network is configured to run with a w2v, one should set the FLAGS properly to use the model without a w2v.
 
 #### Training
-Also using a bash terminal inside the folder ```cnn-text-classification-tf``` call ```python train.py```. To ease up the set up of parameters we used Flags. Those can be listed using ```python train.py --help```
+Also using a bash terminal inside the folder ```scripts``` call ```python train.py```. To ease up the set up of parameters we used Flags. Those can be listed using ```python train.py --help```
 
 #### Eval
 Now that the network has been trained it can predict on some new set using ```python eval.py --eval_train --checkpoint_dir="<path to run>"``` (where ```<path-to-run>``` should reflect the path to dir where the trained model has been checkpointed, it will then choose the latest run as trained model). Note that the trained network is checkpointed in the ```./runs/``` folder. Each run is backuped in a folder named after the time at which it was trained
@@ -45,6 +46,8 @@ filelist=['../twitter-datasets/train_pos_full.txt','../twitter-datasets/train_ne
 Then, the w2v_path should be set to ```'../tweetdatabase_word2vec'``` in both the ```train.py``` and ```eval.py```. One should be careful to be coherent between the word representation in the train and eval steps that should be the same, otherwise the result will be completely random (the neural net being trained on a word representation and evaluated using another word representation for the new input)
 
 ### Architecture
+All script files are in ```scripts/```
+
 #### Helpers
 1. ```data_helpers.py``` : contains all the methods to load the data and do the preprocessing. It contains the following methods:
   * ```write```: Utility function used to be able to write some files to be able to check what some methods do (e.g. load_data_eval)
@@ -71,4 +74,4 @@ Then, the w2v_path should be set to ```'../tweetdatabase_word2vec'``` in both th
 1. ```Baseline_model.ipynb``` : contains a notebook used to generate our baseline model (Logisitc regression using the same word representation than the neural network)
 
 ### External contributions
-In addition to the previously cited library, the tensor flow implemention of the CNN and parts of the evaulation and training protocols come from https://github.com/dennybritz/cnn-text-classification-tf under license Apache
+In addition to the previously cited library, the tensor flow implemention of the CNN and parts of the evaulation and training protocols come from https://github.com/dennybritz/scripts under license Apache
