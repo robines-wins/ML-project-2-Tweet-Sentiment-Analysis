@@ -5,7 +5,7 @@ import tensorflow as tf
 import zipfile
 
 #external files parameter
-tf.flags.DEFINE_string("checkpoint_dir", "./checkpoints", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("checkpoint_dir", "./runs/checkpoints", "Checkpoint directory from training run")
 tf.flags.DEFINE_string("eval_data_file", "../twitter-datasets/test_data.txt", "Data source for the evaluation.")
 
 # Eval parameters
@@ -29,4 +29,5 @@ try:
 	#eval our evaluation set using our model, we only need our vocabulary object, not anymore the word2vec database
 	eval(FLAGS)
 except FileNotFoundError as e:
+	print(e)
 	print("trained CNN archive not found. please put the run.zip archive from AAAAAAAAAAAAAAAAA in the same folder as this script and run this script again")
