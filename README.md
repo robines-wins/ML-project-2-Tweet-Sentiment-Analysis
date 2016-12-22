@@ -26,7 +26,7 @@ To run this code it is necessary to have installed on the computing machine the 
 Note that those files are considered by the programm to be put in ```../twitter-datasets/```
 
 ### Basic run to obtain the kaggle submission
-To obtain the kaggle submission, the only file to be ran is ```run.py``` (Using a terminal enter the folder ```cnn-text-classification-tf``` and input ```python run.py```). To be able to run the model, we provide the zip of the file ([link to run.zip](https://www.dropbox.com/s/8p1rm0wwpfpckpm/runs.zip?dl=0)). This run.zip must be put in the folder ```cnn-text-classification-tf/``` and left compressed.
+To obtain the kaggle submission, the only file to be ran is ```run.py``` (Using a terminal enter the folder ```cnn-text-classification-tf``` and input ```python run.py```). To be able to run the model, **we provide the zip of the file ([link to run.zip](https://www.dropbox.com/s/8p1rm0wwpfpckpm/runs.zip?dl=0))**. This run.zip must be put in the folder ```cnn-text-classification-tf/``` and left compressed.
 
 ### Using the neural network model 
 Note that right now the network is configured to run with a w2v, one should set the FLAGS properly to use the model without a w2v.
