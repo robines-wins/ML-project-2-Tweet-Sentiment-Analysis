@@ -15,11 +15,22 @@ class Word2vec(object):
 		print("\nloading done !")
 
 	def isin(self, word):
-		"""checks the existence of a word in the database"""
+		"""
+		Checks the existence of a word in the database
+
+		IN:
+		word :		the word for which we want to check existence in the database
+
+		"""
 		return (word in self.model.vocab)
 
 	def get(self, word): 
-		"""Returns the vector representation of a given word if exist in the model"""
+		"""
+		Returns the vector representation of a given word if exist in the model
+		
+		IN:
+		word :		the word for which we want to find a representation if it exists
+		"""
 		if self.isin(word):
 			return self.model[word]
 
