@@ -22,7 +22,7 @@ FLAGS._parse_flags()
 
 # Unizips the pretrained model
 try:
-	print("\nunzip trained model\n")
+	print("\nUnzipping trained model (This might take a few seconds.)\n")
 	with zipfile.ZipFile("runs.zip","r") as zipf:
 		zipf.extractall("")
 	print("\nDone !\n")
@@ -30,4 +30,4 @@ try:
 	eval(FLAGS)
 except FileNotFoundError as e:
 	print(e)
-	print("trained CNN archive not found. please put the run.zip archive from AAAAAAAAAAAAAAAAA in the same folder as this script and run this script again")
+	print("Trained CNN archive not found. \nPlease put the run.zip archive from https://www.dropbox.com/s/8p1rm0wwpfpckpm/runs.zip?dl=0 in the same folder as this script and run this script again (note that the runs.zip downloaded should be left unzipped)")
